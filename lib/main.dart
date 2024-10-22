@@ -1,3 +1,4 @@
+import 'package:box_nova/modules/access/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -112,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+          TextButton(onPressed: (){Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));}, child: Text("Ingresar"))
           ],
         ),
       ),
