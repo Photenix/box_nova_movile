@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:box_nova/modules/user/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatelessWidget{
   const Login({ super.key });
@@ -47,24 +48,36 @@ class _LoginFormState extends State<LoginForm>{
       _isLoading = true;
     });
 
-    var url = Uri.parse('https://boxnovan.onrender.com/api/login');
-    var response = await http.post(url,
-      body: {
-        "email": email,
-        "password": password,
-      }
-    );
+    try {
+      var url = Uri.parse('https://boxnovan.onrender.com/api/login');
+      var response = await http.post(url,
+        body: {
+          "email": email,
+          "password": password,
+        }
+      );
 
-    print( response.body );
+      // print( response.body );
 
-    final tokenHeader = response.headers["set-cookie"] ?? "";
+      final tokenHeader = response.headers["set-cookie"] ?? "";
 
-    final token = tokenHeader.split(';')[0].replaceFirst('token=', '');
+      final token = tokenHeader.split(';')[0].replaceFirst('token=', '');
 
-    print( token );
+      // print( token );
+      
+      // Save token in SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', token);
+      print( prefs.getString('token')?? "Token no guardado");
+      
+      var body = json.decode( response.body );
 
-    var body = json.decode( response.body );
-    return body!["success"];
+      return body!["success"];
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -111,7 +124,7 @@ class _LoginFormState extends State<LoginForm>{
                   .then( ( val ){
                     if( val ?? false ){
                       //Iniciar sesión y redireccionar
-                      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserList()) );
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserList()) );
                     }else {
                       // showDialog(context: context, child: Text("Error al iniciar sesión"));
                       setState(() {
@@ -126,6 +139,14 @@ class _LoginFormState extends State<LoginForm>{
               },
               child: Text("Ingresar"),
             ),
+            _isLoading
+            ? ElevatedButton(
+              onPressed: () {
+                setState(() { _isLoading = false; });
+              },
+              child: Text("Cancelar"),
+            )
+            : SizedBox(),
           ],
         )
       )
