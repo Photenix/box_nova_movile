@@ -101,7 +101,7 @@ class _UserTableState extends State<UserTable> {
   }
 
   String shortString ( String text, {int end = 5 } ){
-    if( end > text.length ) end = text.length;
+    if( end > text.length ) return '${text.substring(0, text.length)}';
     return '${text.substring(0, end)}...';
   }
 
