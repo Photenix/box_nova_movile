@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 enum ActionItem { view, edit, delete }
 
 class OptionMenu extends StatefulWidget {
-  const OptionMenu({super.key, required this.id });
+  const OptionMenu({super.key, required this.user });
 
-  final String id;
+  final user;
 
   @override
   State<OptionMenu> createState() => _OptionMenuState();
@@ -19,13 +19,13 @@ class _OptionMenuState extends State<OptionMenu> {
 
   void _handleActions( ActionItem action ){
     if( action == ActionItem.view ){
-      print('Viendo información de ${widget.id}');
+      print('Viendo información de ${widget.user}');
     }
     else if( action == ActionItem.edit ){
-      print('Editando ${widget.id}');
+      print('Editando ${widget.user.id}');
     }
     else if( action == ActionItem.delete ){
-      print('Eliminando ${widget.id}');
+      print('Eliminando ${widget.user.id}');
     }
   }
 
@@ -42,13 +42,38 @@ class _OptionMenuState extends State<OptionMenu> {
         // });
       },
 
+      // itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
-        const PopupMenuItem(
+        PopupMenuItem(
           value: ActionItem.view,
           child: const ListTile(
             leading: Icon(Icons.visibility_outlined),
             title: Text('Detalle'),
           ),
+          onTap: () {
+            showModalBottomSheet<void>(
+              context: context,
+              // sheetAnimationStyle: _animationStyle,
+              builder: (BuildContext context) {
+                Map<String, dynamic> user = widget.user;
+                return SizedBox.expand(
+                  child: Center(
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text('Información de el usuario ${user['username']}', style: TextStyle(fontSize: 20),),
+                        ElevatedButton(
+                          child: const Text('Close'),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            );
+          }
         ),
         const PopupMenuItem<ActionItem>(
           value: ActionItem.edit,
@@ -73,5 +98,42 @@ class _OptionMenuState extends State<OptionMenu> {
         ),
       ],
     ));
+  }
+}
+
+
+class ModalDetail extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuItem(
+      value: ActionItem.view,
+      child: const ListTile(
+            leading: Icon(Icons.visibility_outlined),
+            title: Text('Detalle'),
+          ),
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          // sheetAnimationStyle: _animationStyle,
+          builder: (BuildContext context) {
+            return SizedBox.expand(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Text('Modal bottom sheet'),
+                    ElevatedButton(
+                      child: const Text('Close'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        );
+      }
+    );
   }
 }

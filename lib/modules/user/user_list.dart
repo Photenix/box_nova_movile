@@ -135,7 +135,7 @@ class _UserTableState extends State<UserTable> {
               child: Text(shortString('${user['firstName']} ${user['lastName']}', end: 20), textAlign: TextAlign.center,)
             )
           ),
-          DataCell( OptionMenu(id: user["_id"]) ),
+          DataCell( OptionMenu( user: user ) ),
         ]);
       }).toList()
     );
