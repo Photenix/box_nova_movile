@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:box_nova/models/User.dart';
+import 'package:box_nova/modules/option_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,6 +9,16 @@ import 'package:http/http.dart' as http;
 
 class UserList extends StatelessWidget {
   const UserList({ super.key });
+
+  // TODO: Agregar funcionalidad
+  void _findUser( value ){
+    if( value.length > 3 ){
+      print( value );
+    }
+    else{
+      print("Todos");
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -21,7 +32,31 @@ class UserList extends StatelessWidget {
       //     return UserCard(name: 'User $index');
       //   },
       // ),
-      body: UserTable(),
+      body: 
+      SingleChildScrollView(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric( vertical: 20, horizontal: 12 ),
+              child: Form(child: Column(
+                children: [
+                  TextFormField(
+                    onChanged: _findUser,
+                    decoration: InputDecoration(
+                      labelText: 'Buscar usuario',
+                    ),
+                  )
+                ],
+              )),
+            ),
+            SizedBox( height: 8, ),
+            UserTable()
+          ]
+        )
+      ),
+      )
     );
   }
 }
@@ -50,7 +85,7 @@ class _UserTableState extends State<UserTable> {
       }
     );
 
-    print( response.body );
+    // print( response.body );
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -65,43 +100,42 @@ class _UserTableState extends State<UserTable> {
     }
   }
 
+  String shortString ( String text, {int end = 5 } ){
+    if( end > text.length ) end = text.length;
+    return '${text.substring(0, end)}...';
+  }
+
   @override
   void initState() {
     super.initState();
     print("hi");
     _getUsers();
   }
-
-  //! Ver como funcionan las ToolTips y como puedeo implementarlas
   
   @override
   Widget build(BuildContext context) {
     return 
     DataTable(
       columns: [
+        DataColumn(label: Text('Documento')),
         DataColumn(label: Text('Nombre', textAlign: TextAlign.center,)),
-        DataColumn(label: Text('Correo')),
         DataColumn(label: Text('Opciones')),
       ],
-      // rows: [
-      //   DataRow(cells: [
-      //     DataCell(Text("Juan")),
-      //     DataCell(Text("Juan")),
-      //     DataCell(Text("Juan")),
-      //   ])
-      // ],
       rows: users.map( (user){
         return DataRow(cells: [
-          DataCell(Text(user['username'])),
-          DataCell(Text(user['email'])),
           DataCell(
-              IconButton(
-                icon: Icon(Icons.more_vert),
-                onPressed: () {
-                  // TODO: Implement options menu
-                },
-              ),
+            Tooltip(
+              message: user['documentNumber'],
+              child: Text(shortString(user['documentNumber'])),
+            )
           ),
+          DataCell(
+            Tooltip(
+              message: '${user['firstName']} ${user['lastName']}',
+              child: Text(shortString('${user['firstName']} ${user['lastName']}', end: 20), textAlign: TextAlign.center,)
+            )
+          ),
+          DataCell( OptionMenu(id: user["_id"]) ),
         ]);
       }).toList()
     );

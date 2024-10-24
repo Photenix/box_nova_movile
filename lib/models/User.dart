@@ -1,7 +1,7 @@
 class UserModel {
-  String? nickname, email, firstName, lastName;
+  String? id, nickname, email, firstName, lastName;
 
-  UserModel({ required this.nickname, required this.email, required this.firstName, required this.lastName});
+  UserModel({ required this.id, required this.nickname, required this.email, required this.firstName, required this.lastName});
 
   Map<String, dynamic> toMap() {
     return {
