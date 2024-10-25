@@ -89,7 +89,7 @@ class _UserTableState extends State<UserTable> {
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
-      print( jsonResponse ); 
+      // print( jsonResponse ); 
       setState(() {
         users = jsonResponse;
       });
@@ -108,7 +108,6 @@ class _UserTableState extends State<UserTable> {
   @override
   void initState() {
     super.initState();
-    print("hi");
     _getUsers();
   }
   

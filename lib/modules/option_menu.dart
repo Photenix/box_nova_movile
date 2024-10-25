@@ -1,3 +1,4 @@
+import 'package:box_nova/models/User.dart';
 import 'package:flutter/material.dart';
 
 /// Flutter code sample for [PopupMenuButton].
@@ -29,6 +30,67 @@ class _OptionMenuState extends State<OptionMenu> {
     }
   }
 
+  Widget viewUser (BuildContext context){
+    Map<String, dynamic> user = UserModel.fromMap( widget.user ).toMap();
+
+    Widget info( title, text ){
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(title, style: TextStyle(fontSize: 17, color: Colors.blueAccent )),
+          SizedBox(width: 4),
+          Text(text, style: TextStyle(fontSize: 15)),
+        ],
+      );
+    }
+
+    // DateTime date = DateTime.parse(user["birthdate"]);
+    // user["birthdate"] = '${date.day}/${date.month}/${date.year}';
+
+    return SizedBox.expand(
+      child: 
+      Padding(
+        padding: EdgeInsets.all(12),
+        child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            'Información de el usuario ${user['username']}', 
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              info('Documento', '${user['typeIdentifier']}. ${user['documentNumber']}'),
+              const SizedBox(height: 8,),
+              info('Nombre', '${user['name']}'),
+              const SizedBox(height: 8,),
+              info('Correo', '${user['email']}'),
+              const SizedBox(height: 8,),
+              info('Telefono', '${user['phone']}'),
+              const SizedBox(height: 8,),
+              info('Dirección', '${user['address']}'),
+              const SizedBox(height: 8,),
+              info('Fecha de nacimiento', '${user['birthdate']}'),
+              const SizedBox(height: 8,),
+              info('Cargo', '${user['rol']}'),
+              const SizedBox(height: 8,),
+            ],
+          ),
+          SizedBox(height: 20,),
+          ElevatedButton(
+            child: const Text('Cerrar'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -54,24 +116,7 @@ class _OptionMenuState extends State<OptionMenu> {
             showModalBottomSheet<void>(
               context: context,
               // sheetAnimationStyle: _animationStyle,
-              builder: (BuildContext context) {
-                Map<String, dynamic> user = widget.user;
-                return SizedBox.expand(
-                  child: Center(
-                    child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text('Información de el usuario ${user['username']}', style: TextStyle(fontSize: 20),),
-                        ElevatedButton(
-                          child: const Text('Close'),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
+              builder: viewUser
             );
           }
         ),
