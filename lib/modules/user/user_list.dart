@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:box_nova/models/User.dart';
 import 'package:box_nova/modules/option_menu.dart';
+import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,29 +39,82 @@ class UserList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric( vertical: 20, horizontal: 12 ),
-              child: Form(child: Column(
-                children: [
-                  TextFormField(
-                    onChanged: _findUser,
-                    decoration: InputDecoration(
-                      labelText: 'Buscar usuario',
-                    ),
-                  )
-                ],
-              )),
-            ),
+            UserFinder(handleFind: (value){}),
             SizedBox( height: 8, ),
-            UserTable()
+            UserTable(),
+            SizedBox(height: 70,)
           ]
         )
       ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+      floatingActionButton: FloatingActionButton(
+        tooltip: "Agregar usuario",
+        onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => UserForm()));},
+        child: const Icon(Icons.add),
       )
     );
   }
 }
 
+class UserFinder extends StatelessWidget {
+  const UserFinder({ required this.handleFind });
+  final Function(String) handleFind;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric( vertical: 20, horizontal: 12 ),
+      child: Form(child: Column(
+        children: [
+          TextFormField(
+            onChanged: handleFind,
+            decoration: InputDecoration(
+              labelText: 'Buscar usuario',
+            ),
+          ),
+          SizedBox( height: 8, ),
+          ElevatedButton(
+            onPressed: () async {},
+            child: Text('Buscar'),
+          )
+        ],
+      )),
+    );
+  }
+}
+
+class UserBody extends StatefulWidget{
+  const UserBody({ super.key });
+  @override
+  _UserBodyState createState() => _UserBodyState();
+}
+
+class _UserBodyState extends State<UserBody> {
+
+  Map? _userData;
+
+  void _findUser( String value ){
+    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            UserFinder(handleFind: (value){}),
+            SizedBox( height: 8, ),
+            UserTable(),
+            SizedBox(height: 70,)
+          ]
+        )
+      ),
+    );
+  }
+}
 
 class UserTable extends StatefulWidget {
   const UserTable({ super.key });
@@ -136,7 +190,7 @@ class _UserTableState extends State<UserTable> {
           ),
           DataCell( OptionMenu( user: user ) ),
         ]);
-      }).toList()
+      }).toList(),
     );
   }
 }
