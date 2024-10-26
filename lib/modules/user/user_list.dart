@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:box_nova/models/User.dart';
+import 'package:box_nova/modules/general/CommonSearch.dart';
 import 'package:box_nova/modules/option_menu.dart';
 import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
@@ -33,53 +34,21 @@ class UserList extends StatelessWidget {
       //     return UserCard(name: 'User $index');
       //   },
       // ),
-      body: 
-      SingleChildScrollView(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            UserFinder(handleFind: (value){}),
-            SizedBox( height: 8, ),
-            UserTable(),
-            SizedBox(height: 70,)
-          ]
-        )
-      ),
-      ),
+      body: UserBody(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton(
         tooltip: "Agregar usuario",
         onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => UserForm()));},
         child: const Icon(Icons.add),
       )
-    );
-  }
-}
-
-class UserFinder extends StatelessWidget {
-  const UserFinder({ required this.handleFind });
-  final Function(String) handleFind;
-  
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric( vertical: 20, horizontal: 12 ),
-      child: Form(child: Column(
-        children: [
-          TextFormField(
-            onChanged: handleFind,
-            decoration: InputDecoration(
-              labelText: 'Buscar usuario',
-            ),
-          ),
-          SizedBox( height: 8, ),
-          ElevatedButton(
-            onPressed: () async {},
-            child: Text('Buscar'),
-          )
-        ],
-      )),
+      // floatingActionButton: Builder(
+      //   builder: (context) => FloatingActionButton(
+      //     child: const Icon(Icons.search),
+      //     onPressed: () async{
+      //       await showSearch(context: context, delegate: CustomSearchDelegate());
+      //     }
+      //   )
+      // ),
     );
   }
 }
@@ -90,12 +59,43 @@ class UserBody extends StatefulWidget{
   _UserBodyState createState() => _UserBodyState();
 }
 
+
+typedef UserType = List<Map<String,dynamic>>;
 class _UserBodyState extends State<UserBody> {
 
-  Map? _userData;
+  UserType _userData = [];
 
-  void _findUser( String value ){
-    
+  void _findUser( String value ) async {
+    if( value.length > 4 ){
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String token = prefs.getString('token') ?? '';
+      UserType user = await UserModel.findUsers( value, token );
+      if( user.length > 0 ){
+        setState(() {
+          _userData = user;
+        });
+      }
+    }
+    if( value.length == 0 ){
+      _getAllUsers();
+    }
+  }
+
+  void _getAllUsers() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token') ?? '';
+    UserType user = await UserModel.getUsers( token );
+    if( user.length > 0 ){
+      setState(() {
+        _userData = user;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllUsers();
   }
 
   @override
@@ -105,9 +105,9 @@ class _UserBodyState extends State<UserBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            UserFinder(handleFind: (value){}),
+            Commonsearch( handleFind: _findUser, ),
             SizedBox( height: 8, ),
-            UserTable(),
+            UserTable( usersList: _userData ),
             SizedBox(height: 70,)
           ]
         )
@@ -115,66 +115,24 @@ class _UserBodyState extends State<UserBody> {
     );
   }
 }
-
-class UserTable extends StatefulWidget {
-  const UserTable({ super.key });
-  
-  @override
-  _UserTableState createState() => _UserTableState();
-}
-
-class _UserTableState extends State<UserTable> {
-  // List<UserModel> user = [];
-  List users = [];
-  
-
-  Future<UserModel?> _getUsers() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String token = prefs.getString('token') ?? '';
-
-    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user');
-    var response = await http.get(url,
-      headers: {
-        'authorization': token
-      }
-    );
-
-    // print( response.body );
-
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      // print( jsonResponse ); 
-      setState(() {
-        users = jsonResponse;
-      });
-      // return UserModel.fromJson(jsonResponse);
-    } else {
-      print('Error getting users: $response.statusCode');
-      return null;
-    }
-  }
+class UserTable extends StatelessWidget {
+  const UserTable({ super.key, required this.usersList });
+  final UserType usersList;
 
   String shortString ( String text, {int end = 5 } ){
     if( end > text.length ) return '${text.substring(0, text.length)}';
     return '${text.substring(0, end)}...';
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _getUsers();
-  }
   
   @override
   Widget build(BuildContext context) {
-    return 
-    DataTable(
+    return DataTable(
       columns: [
         DataColumn(label: Text('Documento')),
         DataColumn(label: Text('Nombre', textAlign: TextAlign.center,)),
         DataColumn(label: Text('Opciones')),
       ],
-      rows: users.map( (user){
+      rows: usersList.map( (user){
         return DataRow(cells: [
           DataCell(
             Tooltip(
@@ -189,8 +147,12 @@ class _UserTableState extends State<UserTable> {
             )
           ),
           DataCell( OptionMenu( user: user ) ),
-        ]);
-      }).toList(),
+          ],
+          color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            return user['state']? Colors.transparent : const Color.fromARGB(54, 85, 85, 85);
+          }),
+        );
+      }).toList()
     );
   }
 }

@@ -1,10 +1,11 @@
 import 'package:box_nova/models/User.dart';
+import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
 
 /// Flutter code sample for [PopupMenuButton].
 
 // This is the type used by the popup menu below.
-enum ActionItem { view, edit, delete }
+enum ActionItem { view, edit, delete, state }
 
 class OptionMenu extends StatefulWidget {
   const OptionMenu({super.key, required this.user });
@@ -17,16 +18,28 @@ class OptionMenu extends StatefulWidget {
 
 class _OptionMenuState extends State<OptionMenu> {
   ActionItem? selectedItem;
+  bool _state = true;
 
   void _handleActions( ActionItem action ){
     if( action == ActionItem.view ){
-      print('Viendo información de ${widget.user}');
+      showModalBottomSheet<void>(
+        context: context,
+        // sheetAnimationStyle: _animationStyle,
+        builder: viewUser
+      );
     }
     else if( action == ActionItem.edit ){
-      print('Editando ${widget.user.id}');
+      print('Editando ${widget.user["_id"]}');
+      print(widget.user["state"]);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => UserForm( user: widget.user )));
     }
     else if( action == ActionItem.delete ){
-      print('Eliminando ${widget.user.id}');
+      print('Eliminando ${widget.user["_id"]}');
+    }
+    else if( action == ActionItem.state ){
+      setState(() {
+        _state =!_state;
+      });
     }
   }
 
@@ -43,9 +56,6 @@ class _OptionMenuState extends State<OptionMenu> {
         ],
       );
     }
-
-    // DateTime date = DateTime.parse(user["birthdate"]);
-    // user["birthdate"] = '${date.day}/${date.month}/${date.year}';
 
     return SizedBox.expand(
       child: 
@@ -92,33 +102,34 @@ class _OptionMenuState extends State<OptionMenu> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _state = widget.user["state"];
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    Color iconColor = _state ?Colors.green :Colors.red;
+
     return Center(
       child: PopupMenuButton<ActionItem>(
       initialValue: selectedItem,
 
       onSelected: (ActionItem item) {
         _handleActions(item);
-        // setState(() {
-        //   selectedItem = item;
-        // });
       },
 
       // itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
-        PopupMenuItem(
+        const PopupMenuItem(
           value: ActionItem.view,
           child: const ListTile(
             leading: Icon(Icons.visibility_outlined),
             title: Text('Detalle'),
           ),
-          onTap: () {
-            showModalBottomSheet<void>(
-              context: context,
-              // sheetAnimationStyle: _animationStyle,
-              builder: viewUser
-            );
-          }
         ),
         const PopupMenuItem<ActionItem>(
           value: ActionItem.edit,
@@ -128,17 +139,18 @@ class _OptionMenuState extends State<OptionMenu> {
           ),
         ),
         const PopupMenuItem<ActionItem>(
-          value: ActionItem.view,
-          child: ListTile(
-            leading: Icon(Icons.check_circle_outline),
-            title: Text('Estado'),
-          ),
-        ),
-        const PopupMenuItem<ActionItem>(
           value: ActionItem.delete,
           child: ListTile(
             leading: Icon(Icons.delete_outline),
             title: Text('Eliminar'),
+          ),
+        ),
+        PopupMenuItem<ActionItem>(
+          value: ActionItem.state,
+          child: ListTile(
+            leading: Icon(Icons.check_circle_outline),
+            iconColor: iconColor,
+            title: Text('Estado'),
           ),
         ),
       ],

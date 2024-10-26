@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+
+typedef UsersType = List<Map<String, dynamic>>;
 class UserModel {
   String? id, username, email, name, typeIdentifier, firstName, lastName,
   documentNumber, phone, address, birthdate, rol;
-  bool? state;
+  
+  bool? state;  
 
   UserModel({ this.id, this.username, this.email, this.name });
 
@@ -37,7 +40,7 @@ class UserModel {
     return traslated[rol]?? 'Desconocido';
   }
 
-  static Future<Map<String,dynamic>?> getUsers( token ) async {
+  static Future<UsersType> getUsers( token ) async {
     var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user');
     var response = await http.get(url,
       headers: {
@@ -49,11 +52,31 @@ class UserModel {
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
-      return UserModel.fromMap(jsonResponse).toMap();
-      // return UserModel.fromJson(jsonResponse);
+      return UsersType.from(jsonResponse);
     } else {
       print('Error getting users: $response.statusCode');
-      return null;
+      return [];
+    }
+  }
+
+  static Future< UsersType > findUsers( String find, token ) async {
+    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user/search');
+    var response = await http.post(url,
+      headers: {
+        'authorization': token
+      },
+      body:{
+        'find': find
+      }
+    );
+    
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      return UsersType.from(jsonResponse);
+      // return UserModel.fromJson(jsonResponse);
+    } else {
+      print('Error getting users: ${response.statusCode}');
+      return [];
     }
   }
 
