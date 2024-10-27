@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:box_nova/models/Access.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 
 typedef UsersType = List<Map<String, dynamic>>;
@@ -13,7 +15,6 @@ class UserModel {
   UserModel({ this.id, this.username, this.email, this.name });
 
   UserModel.fromMap(Map<String, dynamic> map) {
-    DateTime date = DateTime.parse(map["birthdate"]);
     id = map['_id'];
     username = map['username'];
     email = map['email'];
@@ -25,7 +26,7 @@ class UserModel {
     phone = map['phone'];
     address = map['address'];
     state = map['state'];
-    birthdate = '${date.day}/${date.month}/${date.year}';
+    birthdate = UserModel.formatBirthDate(map['birthdate']);
     rol = getRol(map['rol']);
   }
 
@@ -40,7 +41,15 @@ class UserModel {
     return traslated[rol]?? 'Desconocido';
   }
 
-  static Future<UsersType> getUsers( token ) async {
+  static String formatBirthDate( String birthday ){
+    DateTime date = DateTime.parse( birthday );
+    // print(DateFormat('dd/MM/yyyy').format(date));
+    return DateFormat('dd/MM/yyyy').format(date);
+  }
+
+  static Future<UsersType> getUsers( ) async {
+    var token = await Access.getToken();
+
     var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user');
     var response = await http.get(url,
       headers: {
@@ -59,7 +68,9 @@ class UserModel {
     }
   }
 
-  static Future< UsersType > findUsers( String find, token ) async {
+  static Future< UsersType > findUsers( String find  ) async {
+    var token = await Access.getToken();
+
     var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user/search');
     var response = await http.post(url,
       headers: {
@@ -80,16 +91,61 @@ class UserModel {
     }
   }
 
-  static Future<void> deleteUser( id, token ) async {
+  static Future<bool> createUser( user ) async{
+    var token = await Access.getToken();
+
+    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user');
+    var response = await http.post(url,
+      headers: {
+        'authorization': token
+      },
+      body: user
+    );
+
+    print( response.body );
+
+    if (response.statusCode == 200)  return true;
+    else return false;
+  }
+
+  static Future<bool> updateUser( id, user ) async{
+    var token = await Access.getToken();
+
+    var insertBody = {
+      "id": '$id',
+      "changes": user
+    };
+
+    // print( user );
+
+    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user/');
+    var response = await http.put(url,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': token
+      },
+      body: jsonEncode( insertBody )
+    );
+
+    // print( response.body );
+
+    if( response.statusCode == 200 ) return true;
+    else return false;
+  }
+
+  static Future<bool> deleteUser( id ) async {
+    var token = await Access.getToken();
+
     var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user/$id');
-    var response = await http.get(url,
+    var response = await http.delete(url,
       headers: {
         'authorization': token
       }
     );
-    if( response.statusCode == 200 ) {
-      print('User eliminado correctamente');
-    }
+
+    // print( response.body );
+
+    return response.statusCode == 200;
   }
 
   Map<String, dynamic> toMap() {

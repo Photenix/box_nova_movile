@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:box_nova/models/Access.dart';
 import 'package:box_nova/modules/home/admin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -72,9 +73,7 @@ class _LoginFormState extends State<LoginForm>{
       // print( token );
       
       // Save token in SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', token);
-      print( prefs.getString('token')?? "Token no guardado");
+      Access.saveToken(token);
       
       var body = json.decode( response.body );
 

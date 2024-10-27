@@ -1,5 +1,6 @@
 import 'package:box_nova/models/User.dart';
 import 'package:box_nova/modules/user/user_form.dart';
+import 'package:box_nova/modules/user/user_list.dart';
 import 'package:flutter/material.dart';
 
 /// Flutter code sample for [PopupMenuButton].
@@ -20,7 +21,15 @@ class _OptionMenuState extends State<OptionMenu> {
   ActionItem? selectedItem;
   bool _state = true;
 
-  void _handleActions( ActionItem action ){
+  dynamic _messageState( context, message ){
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar( content: Text(message,
+        textAlign: TextAlign.center),
+        duration: Duration(seconds: 2) )
+    );
+  }
+
+  void _handleActions( ActionItem action ) async {
     if( action == ActionItem.view ){
       showModalBottomSheet<void>(
         context: context,
@@ -29,17 +38,33 @@ class _OptionMenuState extends State<OptionMenu> {
       );
     }
     else if( action == ActionItem.edit ){
-      print('Editando ${widget.user["_id"]}');
-      print(widget.user["state"]);
+      // print('Editando ${widget.user["_id"]}');
+      // print(widget.user["state"]);
+      // print( widget.user );
       Navigator.push(context, MaterialPageRoute(builder: (context) => UserForm( user: widget.user )));
     }
-    else if( action == ActionItem.delete ){
-      print('Eliminando ${widget.user["_id"]}');
+    else if( action == ActionItem.delete ) {
+      bool isDeleted = await UserModel.deleteUser( widget.user["_id"] );
+      if( isDeleted ){
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));
+        _messageState(context, "Usuario eliminado");
+      }
+      else{
+        _messageState(context, "No se ha podido eliminar el usuario");
+      }
     }
     else if( action == ActionItem.state ){
-      setState(() {
-        _state =!_state;
-      });
+      bool isChanget = await UserModel.updateUser( widget.user["_id"], { "state":  !_state } );
+      if( isChanget ){
+        setState(() {
+          _state =!_state;
+        });
+      }
+      else{
+        // TODO : hacer que sea posible aplicar cambios de estado en el lado del backend
+        _messageState(context, "No se ha podido cambiar de estado al usuario");
+      }
     }
   }
 
@@ -145,14 +170,14 @@ class _OptionMenuState extends State<OptionMenu> {
             title: Text('Eliminar'),
           ),
         ),
-        PopupMenuItem<ActionItem>(
-          value: ActionItem.state,
-          child: ListTile(
-            leading: Icon(Icons.check_circle_outline),
-            iconColor: iconColor,
-            title: Text('Estado'),
-          ),
-        ),
+        // PopupMenuItem<ActionItem>(
+        //   value: ActionItem.state,
+        //   child: ListTile(
+        //     leading: Icon(Icons.check_circle_outline),
+        //     iconColor: iconColor,
+        //     title: Text('Estado'),
+        //   ),
+        // ),
       ],
     ));
   }

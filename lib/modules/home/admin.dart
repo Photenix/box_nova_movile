@@ -1,4 +1,5 @@
 import 'package:box_nova/main.dart';
+import 'package:box_nova/modules/category/category_list.dart';
 import 'package:box_nova/modules/user/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,13 +36,15 @@ class Admin extends StatelessWidget{
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));},
+              onPressed: () {Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => UserList()));},
               child: Text('Listado de usuarios'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));},
-              child: Text('Listado de usuarios'),
+              onPressed: () {Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => CategoryList()));},
+              child: Text('Listado de categoria'),
             ),
             SizedBox(height: 20),
             ElevatedButton(

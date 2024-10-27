@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:box_nova/models/User.dart';
 import 'package:box_nova/modules/general/CommonSearch.dart';
 import 'package:box_nova/modules/option_menu.dart';
 import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:http/http.dart' as http;
 
 class UserList extends StatelessWidget {
   const UserList({ super.key });
@@ -67,9 +62,7 @@ class _UserBodyState extends State<UserBody> {
 
   void _findUser( String value ) async {
     if( value.length > 4 ){
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String token = prefs.getString('token') ?? '';
-      UserType user = await UserModel.findUsers( value, token );
+      UserType user = await UserModel.findUsers( value );
       if( user.length > 0 ){
         setState(() {
           _userData = user;
@@ -82,9 +75,7 @@ class _UserBodyState extends State<UserBody> {
   }
 
   void _getAllUsers() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String token = prefs.getString('token') ?? '';
-    UserType user = await UserModel.getUsers( token );
+    UserType user = await UserModel.getUsers();
     if( user.length > 0 ){
       setState(() {
         _userData = user;
@@ -96,11 +87,14 @@ class _UserBodyState extends State<UserBody> {
   void initState() {
     super.initState();
     _getAllUsers();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return
+    
+    SingleChildScrollView(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
