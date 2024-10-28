@@ -8,7 +8,7 @@ class LocationPage extends StatefulWidget{
 
 class _LocationPageState extends State<LocationPage> {
 
-  String? _currentAddress;
+  // String? _currentAddress;
   Position? _currentPosition;
 
   Future<bool> _handleLocationPermission() async {
@@ -45,6 +45,7 @@ class _LocationPageState extends State<LocationPage> {
     await Geolocator.getCurrentPosition( desiredAccuracy: LocationAccuracy.high )
     .then((Position position) {
       setState(() => _currentPosition = position);
+      print(_currentPosition);
     })
     .catchError((e) {
       debugPrint(e);

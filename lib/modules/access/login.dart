@@ -16,13 +16,16 @@ class Login extends StatelessWidget{
         title: Text('Login', textAlign: TextAlign.justify),
       ),
       body:
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        child: Center(
-          heightFactor: 3,
-          widthFactor: 1,
-          child: LoginForm()
-        ),
+      SingleChildScrollView(
+      child:
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: Center(
+            // heightFactor: 3,
+            widthFactor: 1,
+            child: LoginForm()
+          ),
+        )
       )
     );
   }

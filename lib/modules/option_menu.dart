@@ -72,8 +72,8 @@ class _OptionMenuState extends State<OptionMenu> {
     Map<String, dynamic> user = UserModel.fromMap( widget.user ).toMap();
 
     Widget info( title, text ){
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      return Wrap(
+        alignment: WrapAlignment.center,
         children: <Widget>[
           Text(title, style: TextStyle(fontSize: 17, color: Colors.blueAccent )),
           SizedBox(width: 4),
@@ -83,8 +83,9 @@ class _OptionMenuState extends State<OptionMenu> {
     }
 
     return SizedBox.expand(
-      child: 
-      Padding(
+      child:
+      SingleChildScrollView(
+      child: Padding(
         padding: EdgeInsets.all(12),
         child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -122,6 +123,7 @@ class _OptionMenuState extends State<OptionMenu> {
           ),
         ],
       ),
+      )
       )
     );
   }

@@ -106,6 +106,7 @@ class UserForm extends StatelessWidget{
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text( user == null ? 'Nuevo Usuario' : 'Actualizar Usuario'),
       ),
       body: Center(

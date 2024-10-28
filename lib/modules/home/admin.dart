@@ -1,7 +1,4 @@
 import 'package:box_nova/main.dart';
-import 'package:box_nova/modules/category/category_list.dart';
-import 'package:box_nova/modules/general/experimental_location.dart';
-import 'package:box_nova/modules/general/location_page.dart';
 import 'package:box_nova/modules/general/map_user.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:box_nova/modules/user/user_list.dart';
@@ -27,9 +24,12 @@ class Admin extends StatelessWidget{
     // TODO: Agregarle iconos a los buttons
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Panel de administración'),
       ),
-      body: Center(
+      body:
+      SingleChildScrollView(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -44,12 +44,14 @@ class Admin extends StatelessWidget{
                 MaterialPageRoute(builder: (context) => UserList()));},
               child: Text('Listado de usuarios'),
             ),
+            /*
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => CategoryList()));},
               child: Text('Listado de categoria'),
             ),
+             */
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {Navigator.push(context, 
@@ -57,12 +59,12 @@ class Admin extends StatelessWidget{
               child: Text('Listado de productos'),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => GeolocatorWidget()));},
-              child: Text('Localizarme'),
-            ),
-            SizedBox(height: 20),
+            // ElevatedButton(
+            //   onPressed: () {Navigator.push(context, 
+            //     MaterialPageRoute(builder: (context) => LocationPage()));},
+            //   child: Text('Localizarme'),
+            // ),
+            // SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => MapUser()));},
@@ -76,6 +78,7 @@ class Admin extends StatelessWidget{
           ],
         )
       ),
+      )
     );
   }
 }

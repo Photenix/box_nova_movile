@@ -11,7 +11,6 @@ class WithoutLogin extends StatefulWidget{
 }
 
 class _WithoutLoginState extends State<WithoutLogin> {
-  int _counter = 0;
   
   @override
   Widget build(BuildContext context) {
@@ -44,12 +43,7 @@ class _WithoutLoginState extends State<WithoutLogin> {
             )
           ],
         ),
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      )
     );
   }
 }

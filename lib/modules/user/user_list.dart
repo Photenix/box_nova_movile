@@ -21,14 +21,9 @@ class UserList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Usuarios'),
       ),
-      // body: ListView.builder(
-      //   itemCount: 100,
-      //   itemBuilder: (context, index) {
-      //     return UserCard(name: 'User $index');
-      //   },
-      // ),
       body: UserBody(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton(

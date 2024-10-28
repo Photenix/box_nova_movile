@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:box_nova/models/ProductModel.dart';
 import 'package:box_nova/modules/general/camera_user.dart';
+import 'package:box_nova/modules/product/product_details.dart';
 import 'package:box_nova/modules/product/product_make.dart';
 import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
@@ -55,10 +56,12 @@ class _ProductListState extends State<ProductList> {
   }
 }
 
+enum cardOptions { edit, delete, state }
 class ProductCard extends StatelessWidget {
   final Map product;
   String id = "";
   final GlobalKey<ExpansionTileCardState> cardA = GlobalKey();
+
   
   Color editColor = Color.fromARGB(255, 253, 228, 0);
 
@@ -115,7 +118,14 @@ class ProductCard extends StatelessWidget {
             Text('Clasificación: ', style: titleStyle,),
             classificationIcon( product["classification"] ),
           ],
-        )
+        ),
+        SizedBox(width: 8.0),
+        Wrap(
+          children: [
+            Text('Stock: ', style: titleStyle,),
+            Text('${product["totalQuantity"]}'),
+          ],
+        ),
       ],
     );
   }
@@ -128,15 +138,20 @@ class ProductCard extends StatelessWidget {
     }
 
     var ram = Random();
-
-    int b = ram.nextInt(130);
-    b += 125;
-    int g = ram.nextInt(130);
-    g += 125;
-    int r = ram.nextInt(130);
-    r += 125;
-
+    int b = ram.nextInt(130); b += 125;
+    int g = ram.nextInt(130); g += 125;
+    int r = ram.nextInt(130); r += 125;
     return CircleAvatar( child: Text(product["name"][0].toString().toUpperCase()), backgroundColor: Color.fromARGB(b, g, r, 255), );
+  }
+
+
+  void handleOptions( option ){
+    if( option == cardOptions.edit ){
+      print("venga lo edito bebe");
+    }
+    else if( option == cardOptions.delete ){
+      print("Bum muerto cuchillo pa matarte");
+    }
   }
 
   @override
@@ -168,17 +183,7 @@ class ProductCard extends StatelessWidget {
                 horizontal: 16.0,
                 vertical: 8.0,
               ),
-              child: Text(
-                """Hi there, I'm a drop-in replacement for Flutter's ExpansionTile.
-
-Use me any time you think your app could benefit from being just a bit more Material.
-
-These buttons control the next card down!""",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontSize: 16),
-              ),
+              child: ProductDetails( products: product["details"],),
             ),
           ),
           ButtonBar(
@@ -189,7 +194,8 @@ These buttons control the next card down!""",
               TextButton(
                 style: flatButtonStyle,
                 onPressed: () {
-                  cardA.currentState?.expand();
+                  // cardA.currentState?.expand();
+                  handleOptions( cardOptions.edit );
                 },
                 child: Column(
                   children: <Widget>[
@@ -201,25 +207,11 @@ These buttons control the next card down!""",
                   ],
                 ),
               ),
-              // TextButton(
-              //   style: flatButtonStyle,
-              //   onPressed: () {
-              //     cardA.currentState?.collapse();
-              //   },
-              //   child: const Column(
-              //     children: <Widget>[
-              //       Icon(Icons.arrow_upward),
-              //       Padding(
-              //         padding: EdgeInsets.symmetric(vertical: 2.0),
-              //       ),
-              //       Text('Close'),
-              //     ],
-              //   ),
-              // ),
               TextButton(
                 style: flatButtonStyle,
                 onPressed: () {
-                  cardA.currentState?.toggleExpansion();
+                  // cardA.currentState?.toggleExpansion();
+                  handleOptions( cardOptions.delete );
                 },
                 child: const Column(
                   children: <Widget>[

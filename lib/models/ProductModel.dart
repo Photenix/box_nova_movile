@@ -21,4 +21,16 @@ class ProductModel {
     if (response.statusCode == 200) return ProductType.from(json.decode(response.body));
     else throw Exception('Failed to load products');
   }
+
+  static Future<bool> deleteProduct (String id, Map<String, dynamic> data) async{
+    var token = await Access.getToken();
+    var url = Uri.parse(basicUrl+"/"+id);
+    var response = await http.delete(url, 
+      headers: {
+        'authorization': token
+      }
+    );
+    if (response.statusCode == 200) return true;
+    return false;
+  }
 }
