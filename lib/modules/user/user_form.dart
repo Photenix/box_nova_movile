@@ -172,7 +172,7 @@ class UserForm extends StatelessWidget{
               ),
               
               const SizedBox(height: 10),
-              Text("Tipo de usuario",),
+              const Text("Tipo de usuario",),
               DropdownButtonFormField(
                 onChanged: (value){
                   newUser["rol"] = value;
