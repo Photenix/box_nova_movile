@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:box_nova/models/ProductModel.dart';
 import 'package:box_nova/modules/general/common_message.dart';
 import 'package:box_nova/modules/product/product_details.dart';
+import 'package:box_nova/modules/product/product_form.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
@@ -98,17 +99,13 @@ class ProductCard extends StatelessWidget {
   }
 
 
-  void handleOptions( option ){
-    if( option == cardOptions.edit ){
-      print("venga lo edito bebe");
-    }
-    else if( option == cardOptions.delete ){
-      print("Bum muerto cuchillo pa matarte");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+
+    void handleEdit(){
+      Navigator.push(context, 
+        MaterialPageRoute(builder: (context) => ProductForm( productInfo: product, id: product["_id"],)));
+    }
 
     final ButtonStyle flatButtonStyle = TextButton.styleFrom(
       shape: const RoundedRectangleBorder(
@@ -148,7 +145,7 @@ class ProductCard extends StatelessWidget {
                 style: flatButtonStyle,
                 onPressed: () {
                   // cardA.currentState?.expand();
-                  handleOptions( cardOptions.edit );
+                  handleEdit();
                 },
                 child: Column(
                   children: <Widget>[

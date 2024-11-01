@@ -82,7 +82,7 @@ class _DetailGeneralState extends State<DetailGeneral>{
         ProductCardDetail(
           unicFormKey, i, deleteCard, getInfoCard,
           color: newMap[i]?["color"], size: newMap[i]?["size"], 
-          quantity: newMap[i]?["quantity"], image: newMap[i]?["image"],
+          quantity: newMap[i]?["quantity"].toString(), image: newMap[i]?["image"],
         )
       );
     }

@@ -256,6 +256,16 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                changes:
+                  type: object
       responses:
         "200":
           description: Producto actualizado

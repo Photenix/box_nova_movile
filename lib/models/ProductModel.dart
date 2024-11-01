@@ -65,6 +65,26 @@ class ProductModel {
     else throw Exception('Failed to load products');
   }
 
+  static Future updateProduct ( Map info, id ) async {
+
+    var token = await Access.getToken();
+    var url = Uri.parse(basicUrl);
+    var response = await http.put(url,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': token
+      },
+      body: json.encode({
+        "id": id, 
+        "changes": info
+      })
+    );
+    // print(response.body);
+    if (response.statusCode == 200) return true;
+    return false;
+  }
+
+
   static Future<bool> deleteProduct (String id) async{
     var token = await Access.getToken();
     var url = Uri.parse(basicUrl+"/"+id);

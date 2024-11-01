@@ -1,4 +1,5 @@
 import 'package:box_nova/models/ProductModel.dart';
+import 'package:box_nova/modules/general/common_message.dart';
 import 'package:box_nova/modules/product/product_detail_form.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,11 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 
 
 class ProductForm extends StatefulWidget {
+  ProductForm({ super.key, this.productInfo, this.id });
+
+  final productInfo;
+  final String? id;
+
   @override
   _ProductFormState createState() => _ProductFormState();
 }
@@ -16,6 +22,9 @@ class _ProductFormState extends State<ProductForm> {
   final TextEditingController _controller = TextEditingController();
 
   List _details = [];
+
+  String _titleText = "Crear un producto";
+  String _buttonText = "Crear nuevo producto";
 
   Map<String, dynamic> _product = {};
 
@@ -64,9 +73,28 @@ class _ProductFormState extends State<ProductForm> {
   void initState() {
     _controller.text = totalProduct.toString();
     setState(() {
-      _product["classification"] = "Camisa";
       _product["totalQuantity"] = totalProduct;
+      _product["classification"] = "Female";
+      _product["category"] = "Camisa";
     });
+
+    if( widget.id != null ){
+      // print( widget.productInfo );
+      setState(() {  
+        _product = widget.productInfo;
+
+        _details = widget.productInfo["details"];
+        
+        totalProduct = _product["totalQuantity"];
+        _controller.text = totalProduct.toString();
+
+        _titleText = "Modificar producto";
+        _buttonText = "Modificar";
+        // print(_product);
+      });
+    }
+
+
     super.initState();
   }
 
@@ -75,7 +103,7 @@ class _ProductFormState extends State<ProductForm> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Crear un producto'),
+        title: Text(_titleText),
       ),
       body:
       SingleChildScrollView(
@@ -86,9 +114,12 @@ class _ProductFormState extends State<ProductForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _input("Nombre de producto", "name"),
+              _input("Nombre de producto", "name", initVal: _product["name"]),
               const SizedBox(height: 18,),
-              _input("Precio", "price", keyType: TextInputType.number ),
+              _input("Precio", "price", 
+                keyType: TextInputType.number, 
+                initVal: _product["price"] == null ?null :_product["price"].toString()
+              ),
               const SizedBox(height: 18,),
               TextFormField(
                 controller: _controller,
@@ -130,7 +161,7 @@ class _ProductFormState extends State<ProductForm> {
                   "Female",
                   "Unisex",
                 ],
-                defaultSelected: "Female",
+                defaultSelected: _product["classification"],
                 buttonTextStyle: const ButtonTextStyle(
                   selectedColor: Colors.white,
                   unSelectedColor: Colors.black,
@@ -152,7 +183,7 @@ class _ProductFormState extends State<ProductForm> {
                     _product["category"] = value;
                   });
                 },
-                value: "Camisa",
+                value: _product["category"],
                 icon: const Icon(Icons.abc),
                 padding: const EdgeInsets.all(2),
                 items: const [
@@ -190,14 +221,28 @@ class _ProductFormState extends State<ProductForm> {
                     });
                     print( _product );
 
-                    await ProductModel.createProduct( _product );
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
+                    if( widget.id == null ){
+                      await ProductModel.createProduct( _product );
+                    }
+                    else{
+                      setState(() {
+                        _product.remove("_id");
+                      });
+                      bool status = await ProductModel.updateProduct( _product, widget.id );
+                      if( status ){
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
+                      }
+                      else {
+                        bottomMessage(context, "No se ha podido actualizar");
+                      }
+                    }
+                    
                     // _formKey.currentState!.reset();
                   }
                 },
-                child: Text('Crear nuevo producto'),
+                child: Text(_buttonText),
               ),
             ],
           ),
