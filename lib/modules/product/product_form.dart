@@ -223,6 +223,9 @@ class _ProductFormState extends State<ProductForm> {
 
                     if( widget.id == null ){
                       await ProductModel.createProduct( _product );
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
                     }
                     else{
                       setState(() {
