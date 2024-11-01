@@ -40,7 +40,9 @@ class _WithoutLoginState extends State<WithoutLogin> {
             ),
             TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));},
               child: Text("Registrarse", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),)
-            )
+            ),
+            SizedBox(height: 20.0),
+            Text( 'Proyecto creado por Juan Manuel Pino Ross año 2024',style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center, ),
           ],
         ),
       )

@@ -74,7 +74,9 @@ class Admin extends StatelessWidget{
             ElevatedButton(
               onPressed: _exit,
               child: Text("Salir", style: TextStyle( color: Colors.red ),)
-            )
+            ),
+            SizedBox(height: 20.0),
+            Text( 'Proyecto creado por Juan Manuel Pino Ross año 2024',style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center, ),
           ],
         )
       ),

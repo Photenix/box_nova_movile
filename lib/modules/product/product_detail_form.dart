@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DetailGeneral extends StatefulWidget{
-  DetailGeneral({ super.key, required Function this.sentDetails, required this.listDetails });
+  DetailGeneral({ super.key, required Function this.sentDetails, required this.listDetails, 
+    required this.id });
 
   final Function sentDetails;
   final List listDetails;
+  final String id;
 
   @override
   _DetailGeneralState createState() => _DetailGeneralState();
@@ -77,12 +79,14 @@ class _DetailGeneralState extends State<DetailGeneral>{
     for (var i = 0; i < widget.listDetails.length; i++) {
       GlobalKey<FormState> unicFormKey = GlobalKey<FormState>();
       newMap[i] = widget.listDetails[i];
+      // print(newMap[i]);
       newFormKeys.add(unicFormKey);
       newDetail.add(
         ProductCardDetail(
           unicFormKey, i, deleteCard, getInfoCard,
           color: newMap[i]?["color"], size: newMap[i]?["size"], 
           quantity: newMap[i]?["quantity"].toString(), image: newMap[i]?["image"],
+          detailId: newMap[i]?["_id"], id: widget.id,
         )
       );
     }
@@ -165,7 +169,8 @@ class ProductCardDetail extends StatefulWidget{
     this.newKey, this.index, this.deleteMe, this.sendInfo,
     {
       super.key,
-      this.color, this.size, this.quantity, this.image
+      this.color, this.size, this.quantity, this.image, 
+      this.id, this.detailId
     }
   );
 
@@ -177,6 +182,8 @@ class ProductCardDetail extends StatefulWidget{
   final String? size;
   final String? quantity;
   final String? image;
+  final String? id;
+  final String? detailId;
 
   @override
   _ProductCardDetailState createState() => _ProductCardDetailState();
@@ -358,7 +365,13 @@ class _ProductCardDetailState extends State<ProductCardDetail> {
                   ),
                   SizedBox(width: 20,),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      if( widget.detailId != null ){
+                        print( widget.detailId );
+                        print( widget.id );
+                        await ProductModel.deleteProductDetail( widget.id ?? "", widget.detailId ?? "");
+                        bottomMessage(context, "Detalle de producto eliminado");
+                      }
                       widget.deleteMe(widget.index);
                     },
                     child: const Icon(Icons.delete_outline, color: Colors.red,),

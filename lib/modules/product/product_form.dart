@@ -203,7 +203,7 @@ class _ProductFormState extends State<ProductForm> {
                     onPressed: () {
                       showDialog(context: context, 
                       builder: (BuildContext context) => Dialog.fullscreen(
-                        child: DetailGeneral( sentDetails: _sentDetails, listDetails: _details,))
+                        child: DetailGeneral( sentDetails: _sentDetails, listDetails: _details, id: widget.id ?? "",))
                       );
                     },
                     child: const Text('Agregar detalle'),

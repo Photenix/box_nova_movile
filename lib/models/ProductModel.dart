@@ -97,6 +97,24 @@ class ProductModel {
     return false;
   }
 
+  static Future deleteProductDetail (String id, String detailId) async{
+    var token = await Access.getToken();
+    var url = Uri.parse(basicUrl+"/detail");
+    var response = await http.delete(url, 
+      headers: {
+        'authorization': token,
+        'Content-Type': 'application/json'
+      },
+      body: json.encode({
+        "id": id,
+        "detailId": detailId
+      })
+    );
+    print( response.body );
+    if (response.statusCode == 200) return true;
+    return false;
+  }
+
   static Future< String > uploadImage ( XFile image ) async {
     var token = await Access.getToken();
 
