@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:box_nova/modules/product/product_make.dart';
+import 'package:box_nova/modules/product/product_form.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +64,7 @@ class _CameraInitializerState extends State<CameraInitializer> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductMake(),
+            builder: (context) => ProductForm(),
         ),
       );
     }

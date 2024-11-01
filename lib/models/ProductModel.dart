@@ -24,6 +24,28 @@ class ProductModel {
     else throw Exception('Failed to load products');
   }
 
+  static Future createProduct ( Map info ) async {
+    var token = await Access.getToken();
+    var url = Uri.parse(basicUrl);
+    var response = await http.post(url,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': token
+      },
+      body: json.encode(info)
+    );
+    if (response.statusCode == 201) {
+      print(response.body);
+      print(json.decode(response.body));
+      var data = json.decode(response.body);
+      return data;
+    }
+    else {
+      print(response.body);
+      throw Exception('Failed to create product');
+    }
+  }
+
   static Future<ProductType> searchProducts( value ) async {
     var token = await Access.getToken();
     var url = Uri.parse(basicUrl+"/search");
@@ -43,7 +65,7 @@ class ProductModel {
     else throw Exception('Failed to load products');
   }
 
-  static Future<bool> deleteProduct (String id, Map<String, dynamic> data) async{
+  static Future<bool> deleteProduct (String id) async{
     var token = await Access.getToken();
     var url = Uri.parse(basicUrl+"/"+id);
     var response = await http.delete(url, 
@@ -51,7 +73,7 @@ class ProductModel {
         'authorization': token
       }
     );
-    if (response.statusCode == 200) return true;
+    if (response.statusCode == 200)return true;
     return false;
   }
 
@@ -87,7 +109,7 @@ class ProductModel {
       final jsonResponse = json.decode(response.body);
       String imageUrl = jsonResponse['img']; // Obtén la URL de la respuesta
       print('Imagen subida con éxito: $imageUrl');
-      return "";
+      return imageUrl;
     } else {
       print('Error al subir la imagen');
       print(response.body);

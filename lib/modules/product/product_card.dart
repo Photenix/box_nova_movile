@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:box_nova/models/ProductModel.dart';
+import 'package:box_nova/modules/general/common_message.dart';
 import 'package:box_nova/modules/product/product_details.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:flutter/material.dart';
@@ -158,9 +160,68 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              BtnDelete()
+              BtnDelete( id )
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class BtnDelete extends StatelessWidget{
+
+  BtnDelete( String this.id, { super.key });
+
+  final String id;
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    void handleDelete( ){
+      ProductModel.deleteProduct( id );
+      bottomMessage(context, "Producto eliminado");
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
+    }
+
+    final ButtonStyle flatButtonStyle = TextButton.styleFrom(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+    );
+
+    return TextButton(
+      onPressed: () => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('¿Esta seguro de querer eliminar el usuario?'),
+          content: const Text('Después de eliminado se borrara toda la información relacionada'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancelado'),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: (){
+                handleDelete();
+                Navigator.pop(context, 'Eliminado');
+              },
+              child: const Text('Eliminar', style: TextStyle(color: Colors.redAccent)),
+            ),
+          ],
+        ),
+      ),
+      style: flatButtonStyle,
+      child: const Column(
+        children: <Widget>[
+          Icon(Icons.delete_outline, color: Colors.red,),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 2.0),
+          ),
+          Text('Eliminar', selectionColor: Colors.red,),
         ],
       ),
     );
