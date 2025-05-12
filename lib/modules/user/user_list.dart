@@ -1,6 +1,6 @@
 import 'package:box_nova/models/User.dart';
 import 'package:box_nova/modules/general/CommonSearch.dart';
-import 'package:box_nova/modules/option_menu.dart';
+import 'package:box_nova/modules/user/components/option_menu.dart';
 import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class UserList extends StatelessWidget {
       print("Todos");
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,23 +24,10 @@ class UserList extends StatelessWidget {
         centerTitle: true,
         title: Text('Usuarios'),
       ),
-      body: UserBody(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-      floatingActionButton: FloatingActionButton(
-        tooltip: "Agregar usuario",
-        onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => UserForm()));},
-        child: const Icon(Icons.add),
-      )
-      // floatingActionButton: Builder(
-      //   builder: (context) => FloatingActionButton(
-      //     child: const Icon(Icons.search),
-      //     onPressed: () async{
-      //       await showSearch(context: context, delegate: CustomSearchDelegate());
-      //     }
-      //   )
-      // ),
+      body: UserBody()
     );
   }
+
 }
 
 class UserBody extends StatefulWidget{

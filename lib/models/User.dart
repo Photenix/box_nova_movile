@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:box_nova/models/Access.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 typedef UsersType = List<Map<String, dynamic>>;
 class UserModel {
   String? id, username, email, name, typeIdentifier, firstName, lastName,
   documentNumber, phone, address, birthdate, rol;
   
-  bool? state;  
+  bool? state;
+
+  //String URL_PROJECT = dotenv.env['API_URL'] ?? "http://localhost:80";
 
   UserModel({ this.id, this.username, this.email, this.name });
 
@@ -38,7 +40,8 @@ class UserModel {
       "Client": 'Cliente'
     };
 
-    return traslated[rol]?? 'Desconocido';
+    // return traslated[rol]?? 'Desconocido';
+    return traslated[rol]?? rol;
   }
 
   static String formatBirthDate( String birthday ){
@@ -50,14 +53,15 @@ class UserModel {
   static Future<UsersType> getUsers( ) async {
     var token = await Access.getToken();
 
-    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user');
+    String info = dotenv.get('API_URL', fallback: '');
+    var url = Uri.parse( info + "auth/user");
     var response = await http.get(url,
       headers: {
         'authorization': token
       }
     );
 
-    // print( response.body );
+    //print( response.body );
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -71,7 +75,8 @@ class UserModel {
   static Future< UsersType > findUsers( String find  ) async {
     var token = await Access.getToken();
 
-    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user/search');
+    String info = dotenv.get('API_URL', fallback: '');
+    var url = Uri.parse( info + "auth/user/search");
     var response = await http.post(url,
       headers: {
         'authorization': token
@@ -118,7 +123,8 @@ class UserModel {
 
     // print( user );
 
-    var url = Uri.parse('https://boxnovan.onrender.com/api/auth/user/');
+    String info = dotenv.get('API_URL', fallback: '');
+    var url = Uri.parse( info + "auth/user");
     var response = await http.put(url,
       headers: {
         'Content-Type': 'application/json',

@@ -4,8 +4,10 @@ import 'package:box_nova/models/Access.dart';
 import 'package:box_nova/modules/general/common_message.dart';
 import 'package:box_nova/modules/home/admin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 // import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Login extends StatelessWidget{
   const Login({ super.key });
@@ -60,7 +62,8 @@ class _LoginFormState extends State<LoginForm>{
     });
 
     try {
-      var url = Uri.parse('https://boxnovan.onrender.com/api/login');
+      String info = dotenv.get('API_URL', fallback: '');
+      var url = Uri.parse( info + "login" );
       var response = await http.post(url,
         body: {
           "email": email,

@@ -1,0 +1,1 @@
+D:\Programacion\Flutter\box_nova\build\app\intermediates\cxx\Debug\2632d2p4\obj\arm64-v8a

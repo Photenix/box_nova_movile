@@ -44,14 +44,6 @@ class Admin extends StatelessWidget{
                 MaterialPageRoute(builder: (context) => UserList()));},
               child: Text('Listado de usuarios'),
             ),
-            /*
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => CategoryList()));},
-              child: Text('Listado de categoria'),
-            ),
-             */
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {Navigator.push(context, 
@@ -59,21 +51,9 @@ class Admin extends StatelessWidget{
               child: Text('Listado de productos'),
             ),
             SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {Navigator.push(context, 
-            //     MaterialPageRoute(builder: (context) => LocationPage()));},
-            //   child: Text('Localizarme'),
-            // ),
-            // SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => MapUser()));},
-              child: Text('Mapa'),
-            ),
-            SizedBox(height: 20),
             ElevatedButton(
               onPressed: _exit,
-              child: Text("Salir", style: TextStyle( color: Colors.red ),)
+              child: Text("Cerrar sección", style: TextStyle( color: Colors.red ),)
             ),
             SizedBox(height: 20.0),
             Text( 'Proyecto creado por Juan Manuel Pino Ross año 2024',style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center, ),

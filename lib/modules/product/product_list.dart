@@ -60,14 +60,14 @@ class _ProductListState extends State<ProductList> {
         ],
 
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: "Crear nuevo producto",
-        onPressed: () {
-          Navigator.push(context, 
-          MaterialPageRoute(builder: (context) => ProductForm()));},
-          // MaterialPageRoute(builder: (context) => CameraInitializer()));},
-        child: Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   tooltip: "Crear nuevo producto",
+      //   onPressed: () {
+      //     Navigator.push(context,
+      //     MaterialPageRoute(builder: (context) => ProductForm()));},
+      //     // MaterialPageRoute(builder: (context) => CameraInitializer()));},
+      //   child: Icon(Icons.add),
+      // ),
     );
   }
 }

@@ -60,6 +60,8 @@ class _OptionMenuState extends State<OptionMenu> {
         setState(() {
           _state =!_state;
         });
+        String strAdvice = _state ?"activo" :"inactivo";
+        _messageState(context, "Se ha cambiado el estado al usuario a " + strAdvice);
       }
       else{
         // TODO : hacer que sea posible aplicar cambios de estado en el lado del backend
@@ -140,6 +142,7 @@ class _OptionMenuState extends State<OptionMenu> {
   Widget build(BuildContext context) {
 
     Color iconColor = _state ?Colors.green :Colors.red;
+    Icon iconType = _state ?Icon(Icons.check_circle_outline) :Icon(Icons.radio_button_unchecked_outlined);
 
     return Center(
       child: PopupMenuButton<ActionItem>(
@@ -158,28 +161,28 @@ class _OptionMenuState extends State<OptionMenu> {
             title: Text('Detalle'),
           ),
         ),
-        const PopupMenuItem<ActionItem>(
+        /*const PopupMenuItem<ActionItem>(
           value: ActionItem.edit,
           child: ListTile(
             leading: Icon(Icons.edit_outlined),
             title: Text('Editar'),
           ),
-        ),
-        const PopupMenuItem<ActionItem>(
+        ),*/
+        /*const PopupMenuItem<ActionItem>(
           value: ActionItem.delete,
           child: ListTile(
             leading: Icon(Icons.delete_outline),
             title: Text('Eliminar'),
           ),
+        ),*/
+        PopupMenuItem<ActionItem>(
+          value: ActionItem.state,
+          child: ListTile(
+            leading: iconType,
+            iconColor: iconColor,
+            title: Text('Estado'),
+          ),
         ),
-        // PopupMenuItem<ActionItem>(
-        //   value: ActionItem.state,
-        //   child: ListTile(
-        //     leading: Icon(Icons.check_circle_outline),
-        //     iconColor: iconColor,
-        //     title: Text('Estado'),
-        //   ),
-        // ),
       ],
     ));
   }

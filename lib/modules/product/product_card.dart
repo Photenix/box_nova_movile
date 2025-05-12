@@ -57,9 +57,9 @@ class ProductCard extends StatelessWidget {
     return Wrap(
       alignment: WrapAlignment.center,
       children: [
-        Text('Precio: ', style: titleStyle,),
-        Text('${NumberFormat.simpleCurrency(decimalDigits: 0).format(product["price"])}'),
-        SizedBox(width: 8.0),
+        // Text('Precio: ', style: titleStyle,),
+        // Text('${NumberFormat.simpleCurrency(decimalDigits: 0).format(product["price"])}'),
+        // SizedBox(width: 8.0),
         Wrap(
           children: [
             Text('Categoría: ', style: titleStyle,),
