@@ -145,7 +145,6 @@ class _LoginFormState extends State<LoginForm>{
                     //Iniciar sesión y redireccionar
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Admin()) );
                   }else {
-                    // showDialog(context: context, child: Text("Error al iniciar sesión"));
                     setState(() {
                       _msgInvalidPassword = "La contraseña es invalida";
                     });

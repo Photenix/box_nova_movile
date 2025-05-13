@@ -126,16 +126,16 @@ class ProductCard extends StatelessWidget {
             thickness: 1.0,
             height: 1.0,
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              child: ProductDetails( products: product["details"],),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: Padding(
+          //     padding: const EdgeInsets.symmetric(
+          //       horizontal: 16.0,
+          //       vertical: 8.0,
+          //     ),
+          //     child: ProductDetails( products: product["details"],),
+          //   ),
+          // ),
           ButtonBar(
             alignment: MainAxisAlignment.spaceAround,
             buttonHeight: 52.0,
