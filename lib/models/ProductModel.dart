@@ -11,17 +11,17 @@ class ProductModel {
 
   static String basicUrl = "https://boxnovan.onrender.com/api/auth/product";
 
-  static Future<ProductType> getProducts () async {
+  static Future<ProductType> getProducts ([int page = 1, int limit = 10]) async {
     var token = await Access.getToken();
 
-    var url = Uri.parse(basicUrl);
+    var url = Uri.parse('$basicUrl?page=$page&limit=$limit');
     var response = await http.get(url, 
       headers: {
         'authorization': token
       }
     );
-    print( response.body );
-    if (response.statusCode == 200) return ProductType.from(json.decode(response.body));
+    var data = json.decode(response.body);
+    if (response.statusCode == 200) return ProductType.from(data["data"]);
     else throw Exception('Failed to load products');
   }
 
@@ -59,6 +59,7 @@ class ProductModel {
         'find': value
       })
     );
+    print( response.body );
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       return ProductType.from(data["data"]);

@@ -72,7 +72,7 @@ class Admin extends StatelessWidget {
                   context: context,
                   icon: Icons.people_alt,
                   text: 'Listado de usuarios',
-                  destination: UserList(),
+                  destination: UserBody(),
                 ),
               ),
 

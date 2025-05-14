@@ -1,5 +1,6 @@
 import 'package:box_nova/models/User.dart';
 import 'package:box_nova/modules/general/CommonSearch.dart';
+import 'package:box_nova/modules/general/pagination_controls.dart';
 import 'package:box_nova/modules/user/components/option_menu.dart';
 import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
@@ -41,17 +42,23 @@ typedef UserType = List<Map<String,dynamic>>;
 class _UserBodyState extends State<UserBody> {
 
   UserType _userData = [];
+  int _currentPage = 1;
+  int _limit = 10;
+  bool _hasMore = true;
 
-  void _findUser( String value ) async {
-    if( value.length > 4 ){
-      UserType user = await UserModel.findUsers( value );
+  TextEditingController _searchController = TextEditingController();
+
+  void _findUser(  ) async {
+    final query = _searchController.text.toLowerCase();
+    if( query.length > 3 ){
+      UserType user = await UserModel.findUsers( query );
       if( user.length > 0 ){
         setState(() {
           _userData = user;
         });
       }
     }
-    if( value.length == 0 ){
+    if( query.length == 0 ){
       _getAllUsers();
     }
   }
@@ -65,29 +72,95 @@ class _UserBodyState extends State<UserBody> {
     }
   }
 
+  Future<void> _refreshUsers() async {
+    setState(() {
+      // _currentPage = 1;
+      // _productList.clear();
+    });
+    _getAllUsers();
+  }
+
+  void _changeLimit(int newLimit) {
+    setState(() {
+      _limit = newLimit;
+      _currentPage = 1;
+      _userData.clear();
+      _hasMore = true;
+    });
+    _getAllUsers();
+  }
+
   @override
   void initState() {
     super.initState();
     _getAllUsers();
     setState(() {});
+    _searchController.addListener(_findUser);
   }
 
   @override
   Widget build(BuildContext context) {
     return
-    
-    SingleChildScrollView(
-      child: Center(
+      Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Usuarios'),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Buscar usuarios...',
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                ),
+              ),
+            ),
+          ),
+        ),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Commonsearch( handleFind: _findUser, ),
-            SizedBox( height: 8, ),
-            UserTable( usersList: _userData ),
-            SizedBox(height: 70,)
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshUsers,
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: UserTable(usersList: _userData),
+                ),
+              )
+            ),
+            // Commonsearch( handleFind: _findUser, ),
+            // SizedBox( height: 8, ),
+            // SizedBox(height: 70,)
+            PaginationControls(
+              currentPage: _currentPage,
+              hasMore: _hasMore,
+              limit: _limit,
+              onPrevious: () {
+                setState(() => _currentPage--);
+                _getAllUsers();
+              },
+              onNext: () {
+                setState(() => _currentPage++);
+                _getAllUsers();
+              },
+              onChangeLimit: (newLimit) {
+                _changeLimit(newLimit);
+              },
+            )
           ]
         )
-      ),
+      )
     );
   }
 }

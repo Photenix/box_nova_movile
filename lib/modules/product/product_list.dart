@@ -1,5 +1,6 @@
 import 'package:box_nova/models/ProductModel.dart';
 import 'package:box_nova/modules/general/CommonSearch.dart';
+import 'package:box_nova/modules/general/pagination_controls.dart';
 import 'package:box_nova/modules/product/product_card.dart';
 import 'package:box_nova/modules/product/product_details.dart';
 import 'package:box_nova/modules/product/product_form.dart';
@@ -13,83 +14,57 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  // Datos de ejemplo basados en tu esquema
-  List<Map<String, dynamic>> _productList = [
-    {
-      'name': 'Zapatillas Running',
-      'description': 'Zapatillas cómodas para correr largas distancias',
-      'totalQuantity': 50,
-      'classification': 'Unisex',
-      'color': 'Black/Red',
-      'images': [
-        'https://down-co.img.susercontent.com/file/e2dc82222934c185d9bbf76d8977e8fa'
-      ],
-      'details': [
-        {
-          'size': 'M',
-          'price': 89.99,
-          'quantity': 20,
-          'discount': 10,
-          'barcode': '1234567890123'
-        },
-        {
-          'size': 'L',
-          'price': 89.99,
-          'quantity': 30,
-          'discount': 15,
-          'barcode': '1234567890124'
-        }
-      ]
-    },
-    {
-      'name': 'Camiseta Deportiva',
-      'description': 'Camiseta transpirable para entrenamiento',
-      'totalQuantity': 75,
-      'classification': 'Male',
-      'color': 'Blue',
-      'images': [], // Sin imágenes
-      'details': [
-        {
-          'size': 'S',
-          'price': 29.99,
-          'quantity': 25,
-          'discount': 0,
-          'barcode': '1234567890125'
-        },
-        {
-          'size': 'M',
-          'price': 29.99,
-          'quantity': 30,
-          'discount': 5,
-          'barcode': '1234567890126'
-        },
-        {
-          'size': 'L',
-          'price': 29.99,
-          'quantity': 20,
-          'discount': 0,
-          'barcode': '1234567890127'
-        }
-      ]
-    }
-  ];
+  ProductType _productList = [];
+
   bool _isLoading = true;
   TextEditingController _searchController = TextEditingController();
+
+  int _currentPage = 1;
+  int _limit = 10;
+  bool _hasMore = true;
+
+
+  Future<void> _refreshProducts() async {
+    setState(() {
+      _currentPage = 1;
+      _productList.clear();
+    });
+    _getProducts();
+  }
+
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+    });
+    _getProducts();
+  }
+
+  void _changeLimit(int newLimit) {
+    setState(() {
+      _limit = newLimit;
+      _currentPage = 1;
+      _productList.clear();
+      _hasMore = true;
+    });
+    _getProducts();
+  }
+
 
   void _getProducts() async {
     setState(() {
       _isLoading = true; // Activar el estado de carga
     });
 
-    try{
-      List<Map<String, dynamic>> products = await ProductModel.getProducts();
+    try {
+      ProductType products = await ProductModel.getProducts(
+          _currentPage, _limit);
       // print( products );
       setState(() {
         _productList = products;
         _isLoading = false;
       });
     }
-    catch(e){
+    catch (e) {
       print(e);
       setState(() {
         _isLoading = false;
@@ -98,15 +73,17 @@ class _ProductListState extends State<ProductList> {
   }
 
   void _findProducts() async {
+    if (_isLoading) return;
     final query = _searchController.text.toLowerCase();
-    setState(() {
-      _isLoading = true; // Activar el estado de carga
-    });
-    try{
-      if( query.length == 0 ){
+
+    try {
+      if (query.length == 0) {
         _getProducts();
       }
-      else{
+      else if (query.length > 2) {
+        setState(() {
+          _isLoading = true; // Activar el estado de carga
+        });
         ProductType products = await ProductModel.searchProducts(query);
         setState(() {
           _productList = products;
@@ -114,7 +91,7 @@ class _ProductListState extends State<ProductList> {
         });
       }
     }
-    catch(e){
+    catch (e) {
       print(e);
       setState(() {
         _isLoading = false;
@@ -132,65 +109,111 @@ class _ProductListState extends State<ProductList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Listado de Productos'),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Buscar productos...',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
+        appBar: AppBar(
+          title: Text('Listado de Productos'),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Buscar productos...',
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 0),
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
               ),
             ),
           ),
         ),
-      ),
-      body:
-      _isLoading
-      ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        body:
+        _isLoading
+            ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(), // Indicador de carga circular
+              SizedBox(height: 16),
+              Text('Cargando productos...'),
+            ],
+          ),
+        )
+          : _productList.isEmpty
+          ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.search_off, size: 50, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                _searchController.text.isEmpty
+                    ? 'No hay productos disponibles'
+                    : 'No se encontraron resultados',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                child: ElevatedButton.icon(
+                  onPressed: _clearSearch,
+                  label: Text(
+                    "Limpiar busqueda",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple[500],
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+            : Column(
           children: [
-            CircularProgressIndicator(), // Indicador de carga circular
-            SizedBox(height: 16),
-            Text('Cargando productos...'),
-          ],
-        ),
-      )
-      : _productList.isEmpty
-      ?Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.search_off, size: 50, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              _searchController.text.isEmpty
-                  ? 'No hay productos disponibles'
-                  : 'No se encontraron resultados',
-              style: TextStyle(fontSize: 18),
+            Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refreshProducts,
+                  child: ListView.builder(
+                    itemCount: _productList.length,
+                    //crea producto por producto
+                    itemBuilder: (context, index) {
+                      final product = _productList[index];
+                      return _buildProductCard(product);
+                    },
+                  ),
+                )
             ),
+            PaginationControls(
+              currentPage: _currentPage,
+              hasMore: _hasMore,
+              limit: _limit,
+              onPrevious: () {
+                setState(() => _currentPage--);
+                _getProducts();
+              },
+              onNext: () {
+                setState(() => _currentPage++);
+                _getProducts();
+              },
+              onChangeLimit: (newLimit) {
+                _changeLimit(newLimit);
+              },
+            )
           ],
-        ),
-      )
-      :ListView.builder(
-        itemCount: _productList.length,
-        //crea producto por producto
-        itemBuilder: (context, index) {
-          final product = _productList[index];
-          return _buildProductCard(product);
-        },
-      ),
+        )
     );
   }
 
@@ -208,8 +231,8 @@ class _ProductListState extends State<ProductList> {
       'Boy': 'Niño'
     };
 
-    String showDescription( description ){
-      if( description == null || description == '' ) return "Sin descripción";
+    String showDescription(description) {
+      if (description == null || description == '') return "Sin descripción";
       return description;
     }
 
@@ -241,18 +264,20 @@ class _ProductListState extends State<ProductList> {
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[200],
-                    width: 80,
-                    height: 80,
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                  errorWidget: (context, url, error) => Image.network(
-                    'https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png',
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  ),
+                  placeholder: (context, url) =>
+                      Container(
+                        color: Colors.grey[200],
+                        width: 80,
+                        height: 80,
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                  errorWidget: (context, url, error) =>
+                      Image.network(
+                        'https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
                 ),
               ),
               SizedBox(width: 16),
@@ -282,7 +307,8 @@ class _ProductListState extends State<ProductList> {
                     Row(
                       children: [
                         Chip(
-                          label: Text(traslater[product['classification']] ?? product['classification']),
+                          label: Text(traslater[product['classification']] ??
+                              product['classification']),
                           backgroundColor: Colors.purple[50],
                           labelStyle: TextStyle(color: Colors.purple[800]),
                         ),
@@ -302,9 +328,11 @@ class _ProductListState extends State<ProductList> {
                         Text(
                           // '\$${product['details'][0]['price']}',
                           NumberFormat.currency(
-                            decimalDigits: 0,       // Cantidad de decimales (0 para precios enteros)
-                            symbol: '',             // Elimina el símbolo de moneda
-                            locale: 'es',           // Configuración regional para español
+                            decimalDigits: 0,
+                            // Cantidad de decimales (0 para precios enteros)
+                            symbol: '',
+                            // Elimina el símbolo de moneda
+                            locale: 'es', // Configuración regional para español
                           ).format(product['details'][0]['price']) + " COP",
                           style: TextStyle(
                             fontSize: 16,
@@ -317,13 +345,6 @@ class _ProductListState extends State<ProductList> {
 
                   ],
                 ),
-              ),
-              // Cantidad y precio
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-
-                ],
               ),
             ],
           ),

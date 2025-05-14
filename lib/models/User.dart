@@ -54,7 +54,7 @@ class UserModel {
     var token = await Access.getToken();
 
     String info = dotenv.get('API_URL', fallback: '');
-    var url = Uri.parse( info + "auth/user");
+    var url = Uri.parse( info + "auth/user?limit=20");
     var response = await http.get(url,
       headers: {
         'authorization': token
@@ -85,6 +85,8 @@ class UserModel {
         'find': find
       }
     );
+
+    print( response.body );
     
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);

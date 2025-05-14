@@ -12,6 +12,8 @@ class ProductDetails extends StatelessWidget {
     final hasImages = product['images'] != null && product['images'].isNotEmpty;
     final defaultImage = 'https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png';
 
+    String descriptionProduct = product['description'] == '' ?'Sin descripción' :product['description'];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(product['name']),
@@ -80,7 +82,7 @@ class ProductDetails extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Text(
-              product['description'] ?? 'Sin descripción',
+              descriptionProduct ?? 'Sin descripción',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 24),
