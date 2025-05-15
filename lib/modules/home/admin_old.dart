@@ -1,23 +1,24 @@
 import 'package:box_nova/main.dart';
-import 'package:box_nova/modules/general/map_user.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:box_nova/modules/user/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Admin extends StatelessWidget{
+  const Admin({super.key});
+
   
 
   @override
   Widget build(BuildContext context) {
 
-    void _exit() async {
+    void exit() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
 
       print("Saliendo a inicio");
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: "Inicio") ));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage(title: "Inicio") ));
       // SystemNavigator.pop();
     }
 
@@ -25,7 +26,7 @@ class Admin extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Panel de administración'),
+        title: const Text('Panel de administración'),
       ),
       body:
       SingleChildScrollView(
@@ -38,25 +39,25 @@ class Admin extends StatelessWidget{
               width: 350.0,
               child: Image.asset('assets/images/Logo.jpeg'),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => UserList()));},
-              child: Text('Listado de usuarios'),
+                MaterialPageRoute(builder: (context) => const UserList()));},
+              child: const Text('Listado de usuarios'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => ProductList()));},
-              child: Text('Listado de productos'),
+                MaterialPageRoute(builder: (context) => const ProductList()));},
+              child: const Text('Listado de productos'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _exit,
-              child: Text("Cerrar sección", style: TextStyle( color: Colors.red ),)
+              onPressed: exit,
+              child: const Text("Cerrar sección", style: TextStyle( color: Colors.red ),)
             ),
-            SizedBox(height: 20.0),
-            Text( 'Proyecto creado por Juan Manuel Pino Ross año 2024',style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center, ),
+            const SizedBox(height: 20.0),
+            const Text( 'Proyecto creado por Juan Manuel Pino Ross año 2024',style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center, ),
           ],
         )
       ),

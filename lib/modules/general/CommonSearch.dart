@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Commonsearch extends StatelessWidget{
 
-  Commonsearch({ required this.handleFind });
+  const Commonsearch({super.key,  required this.handleFind });
   final handleFind;
 
   @override
@@ -13,7 +13,7 @@ class Commonsearch extends StatelessWidget{
         builder: (BuildContext context, SearchController controller) {
           return SearchBar(
             controller: controller,
-            padding: const MaterialStatePropertyAll<EdgeInsets>(
+            padding: const WidgetStatePropertyAll<EdgeInsets>(
                 EdgeInsets.symmetric(horizontal: 16.0)),
             // onTap: () {
             //   // controller.openView();
@@ -29,7 +29,7 @@ class Commonsearch extends StatelessWidget{
           (BuildContext context, SearchController controller) {
             return [
               ListTile(
-                title: Text(''),
+                title: const Text(''),
                 onTap: () {
                 },
               )

@@ -2,6 +2,8 @@ import 'package:box_nova/models/CategoryModel.dart';
 import 'package:flutter/material.dart';
 
 class CategoryList extends StatefulWidget{
+  const CategoryList({super.key});
+
   @override
   _CategoryListState createState() => _CategoryListState();
 }
@@ -30,21 +32,21 @@ class _CategoryListState extends State<CategoryList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category List'),
+        title: const Text('Category List'),
       ),
       body: Center(
         child: ListView.builder(
           itemCount: _categories.length,
           itemBuilder: (context, index) {
             var cat = _categories[index];
-            List subCat = cat!["subCategorias"] ?? [];
+            List subCat = cat["subCategorias"] ?? [];
             print(cat);
 
             return ListTile(
-              title: Text('${cat!["nombre"]}'),
+              title: Text('${cat["nombre"]}'),
               subtitle: Row(
                 children: subCat.map( (element) {
-                  return Text(' - ${element["nombre"]}', style: TextStyle(fontSize: 16.0));
+                  return Text(' - ${element["nombre"]}', style: const TextStyle(fontSize: 16.0));
                 }).toList()
               ),
             );

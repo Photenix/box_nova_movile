@@ -1,4 +1,3 @@
-import 'package:box_nova/modules/access/login.dart';
 import 'package:box_nova/modules/home/admin.dart';
 import 'package:box_nova/modules/home/without_login.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return _isAuthenticated 
-    ?Admin()
+    ?const Admin()
     :WithoutLogin(title: widget.title);
     // :Login();
   }

@@ -1,14 +1,13 @@
 import 'package:box_nova/models/ProductModel.dart';
-import 'package:box_nova/modules/general/CommonSearch.dart';
 import 'package:box_nova/modules/general/pagination_controls.dart';
-import 'package:box_nova/modules/product/product_card.dart';
 import 'package:box_nova/modules/product/product_details.dart';
-import 'package:box_nova/modules/product/product_form.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 class ProductList extends StatefulWidget {
+  const ProductList({super.key});
+
   @override
   _ProductListState createState() => _ProductListState();
 }
@@ -17,7 +16,7 @@ class _ProductListState extends State<ProductList> {
   ProductType _productList = [];
 
   bool _isLoading = true;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   int _currentPage = 1;
   int _limit = 10;
@@ -77,7 +76,7 @@ class _ProductListState extends State<ProductList> {
     final query = _searchController.text.toLowerCase();
 
     try {
-      if (query.length == 0) {
+      if (query.isEmpty) {
         _getProducts();
       }
       else if (query.length > 2) {
@@ -110,23 +109,23 @@ class _ProductListState extends State<ProductList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Listado de Productos'),
+          title: const Text('Listado de Productos'),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(60),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Buscar productos...',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 ),
               ),
             ),
@@ -134,7 +133,7 @@ class _ProductListState extends State<ProductList> {
         ),
         body:
         _isLoading
-            ? Center(
+            ? const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -149,19 +148,19 @@ class _ProductListState extends State<ProductList> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.search_off, size: 50, color: Colors.grey),
-              SizedBox(height: 16),
+              const Icon(Icons.search_off, size: 50, color: Colors.grey),
+              const SizedBox(height: 16),
               Text(
                 _searchController.text.isEmpty
                     ? 'No hay productos disponibles'
                     : 'No se encontraron resultados',
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 child: ElevatedButton.icon(
                   onPressed: _clearSearch,
-                  label: Text(
+                  label: const Text(
                     "Limpiar busqueda",
                     style: TextStyle(
                       fontSize: 16,
@@ -170,7 +169,7 @@ class _ProductListState extends State<ProductList> {
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple[500],
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -237,7 +236,7 @@ class _ProductListState extends State<ProductList> {
     }
 
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -253,7 +252,7 @@ class _ProductListState extends State<ProductList> {
           );
         },
         child: Padding(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               // Imagen del producto
@@ -269,7 +268,7 @@ class _ProductListState extends State<ProductList> {
                         color: Colors.grey[200],
                         width: 80,
                         height: 80,
-                        child: Center(child: CircularProgressIndicator()),
+                        child: const Center(child: CircularProgressIndicator()),
                       ),
                   errorWidget: (context, url, error) =>
                       Image.network(
@@ -280,7 +279,7 @@ class _ProductListState extends State<ProductList> {
                       ),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               // Información del producto
               Expanded(
                 child: Column(
@@ -288,12 +287,12 @@ class _ProductListState extends State<ProductList> {
                   children: [
                     Text(
                       product['name'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       showDescription(product['description']),
                       maxLines: 2,
@@ -303,7 +302,7 @@ class _ProductListState extends State<ProductList> {
                         color: Colors.grey[600],
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Chip(
@@ -324,16 +323,16 @@ class _ProductListState extends State<ProductList> {
                             color: Colors.grey[600],
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
                           // '\$${product['details'][0]['price']}',
-                          NumberFormat.currency(
+                          "${NumberFormat.currency(
                             decimalDigits: 0,
                             // Cantidad de decimales (0 para precios enteros)
                             symbol: '',
                             // Elimina el símbolo de moneda
                             locale: 'es', // Configuración regional para español
-                          ).format(product['details'][0]['price']) + " COP",
+                          ).format(product['details'][0]['price'])} COP",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

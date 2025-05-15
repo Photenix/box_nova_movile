@@ -23,11 +23,11 @@ class UserForm extends StatelessWidget{
     String? isValid ( value ) {
       if( value.isEmpty ) return "Ingrese el campo";
       return null;
-    };
+    }
 
     return TextFormField(
       initialValue: initValue,
-      scrollPadding: EdgeInsets.only(bottom: 4),
+      scrollPadding: const EdgeInsets.only(bottom: 4),
       onChanged: (value){
         newUser[realKey] = value;
       },
@@ -42,7 +42,7 @@ class UserForm extends StatelessWidget{
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar( content: Text(message,
         textAlign: TextAlign.center),
-        duration: Duration(seconds: 2) )
+        duration: const Duration(seconds: 2) )
     );
   }
 
@@ -50,13 +50,13 @@ class UserForm extends StatelessWidget{
     if( _formKey.currentState!.validate() ){
       // Navigator.pop(context, user == null ? null : newUser);
       if( user != null ){
-        if( newUser.keys.length > 0 ){
+        if( newUser.keys.isNotEmpty ){
           // Update user
           bool isChanged = await UserModel.updateUser( user?["_id"], newUser );
           if( isChanged ){
             Navigator.pop(context);
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const UserList()));
           }
           else{
             _messageState( context, 'Error, no se ha podido hacer el procedimiento');
@@ -74,7 +74,7 @@ class UserForm extends StatelessWidget{
         if( isChanged ){
           Navigator.pop(context);
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const UserList()));
         }
         else{
           _messageState( context, 'No se ha creado el usuario');
@@ -85,22 +85,22 @@ class UserForm extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _selectedDate() async {
+    Future<void> selectedDate() async {
       DateTime dateNow = DateTime.now();
       if( user?["birthdate"] != null ){
         dateNow = DateTime.parse(user?["birthdate"]);
       }
 
-      DateTime? _picked = await showDatePicker(
+      DateTime? picked = await showDatePicker(
         context: context, 
         initialDate: dateNow,
         firstDate: DateTime(1890),
         lastDate: DateTime(2100)
       );
 
-      if( _picked!= null ) {
-        _dateController.text = UserModel.formatBirthDate(_picked.toString());
-        newUser["birthdate"] = DateTime.parse(_picked.toString()).toIso8601String();
+      if( picked!= null ) {
+        _dateController.text = UserModel.formatBirthDate(picked.toString());
+        newUser["birthdate"] = DateTime.parse(picked.toString()).toIso8601String();
       }
     }
 
@@ -111,7 +111,7 @@ class UserForm extends StatelessWidget{
       ),
       body: Center(
         child: Container(
-          padding: EdgeInsets.all(18),
+          padding: const EdgeInsets.all(18),
           child: Form(
             key: _formKey,
             child: Column(
@@ -121,7 +121,7 @@ class UserForm extends StatelessWidget{
                   Flexible(
                     child: _input("Nombre", "firstName",initValue: user?["firstName"] ),
                   ),
-                  SizedBox(width: 20,),
+                  const SizedBox(width: 20,),
                   Flexible(
                     child: _input("Apellido", "lastName",initValue: user?["lastName"] ),
                   )
@@ -132,7 +132,7 @@ class UserForm extends StatelessWidget{
                   Flexible(
                     child: _input("Nombre de usuario", "username",initValue: user?["username"] ),
                   ),
-                  SizedBox(width: 20,),
+                  const SizedBox(width: 20,),
                   Flexible(
                     child: _input("Correo", "email", initValue: user?["email"] ),
                   )
@@ -144,17 +144,17 @@ class UserForm extends StatelessWidget{
                     child: _input("Documento de Identidad", "documentNumber",
                       initValue: user?["documentNumber"] ),
                   ),
-                  SizedBox(width: 20,),
+                  const SizedBox(width: 20,),
                   Flexible(
                     child: TextField(
                       controller: _dateController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Cumpleaños",
                         // filled: true,
                         suffixIcon: Icon(Icons.calendar_today),
                       ),
                       readOnly: true,
-                      onTap: (){_selectedDate();},
+                      onTap: (){selectedDate();},
                     ),
                   )
                 ],
@@ -164,7 +164,7 @@ class UserForm extends StatelessWidget{
                   Flexible(child: 
                     _input("Telefono", "phone", initValue: user?["phone"] ),
                   ),
-                  SizedBox(width: 20,),
+                  const SizedBox(width: 20,),
                   Flexible(child: 
                     _input("Dirección", "address", initValue: user?["address"] ),
                   ),
@@ -178,9 +178,9 @@ class UserForm extends StatelessWidget{
                   newUser["rol"] = value;
                 },
                 value: user == null ? "Client" : user?["rol"],
-                icon: Icon(Icons.person),
-                padding: EdgeInsets.all(2),
-                items: [
+                icon: const Icon(Icons.person),
+                padding: const EdgeInsets.all(2),
+                items: const [
                   DropdownMenuItem(value: "Admin", child: Text("Administrador")),
                   DropdownMenuItem(value: "Worker", child: Text("Empleado")),
                   DropdownMenuItem(value: "Client", child: Text("Cliente")),
@@ -194,12 +194,12 @@ class UserForm extends StatelessWidget{
                 onChanged: (value){
                   newUser["password"] = value;
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Contraseña',
                   suffixIcon: Icon(Icons.lock),
                 ),
               )
-              : SizedBox(),
+              : const SizedBox(),
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {

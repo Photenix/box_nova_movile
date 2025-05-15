@@ -2,12 +2,10 @@ import 'dart:math';
 
 import 'package:box_nova/models/ProductModel.dart';
 import 'package:box_nova/modules/general/common_message.dart';
-import 'package:box_nova/modules/product/product_details.dart';
 import 'package:box_nova/modules/product/product_form.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
-import 'package:intl/intl.dart';
 
 enum cardOptions { edit, delete, state }
 
@@ -17,7 +15,7 @@ class ProductCard extends StatelessWidget {
   final GlobalKey<ExpansionTileCardState> cardA = GlobalKey();
 
   
-  Color editColor = Color.fromARGB(255, 253, 228, 0);
+  Color editColor = const Color.fromARGB(255, 253, 228, 0);
 
   ProductCard(this.product, { super.key }){
     // print( product );
@@ -52,7 +50,7 @@ class ProductCard extends StatelessWidget {
 
   Widget previewInfo(){
 
-    final titleStyle = TextStyle(fontWeight: FontWeight.w500);
+    const titleStyle = TextStyle(fontWeight: FontWeight.w500);
 
     return Wrap(
       alignment: WrapAlignment.center,
@@ -62,21 +60,21 @@ class ProductCard extends StatelessWidget {
         // SizedBox(width: 8.0),
         Wrap(
           children: [
-            Text('Categoría: ', style: titleStyle,),
+            const Text('Categoría: ', style: titleStyle,),
             Text('${product["category"]}'),
           ],
         ),
-        SizedBox(width: 8.0),
+        const SizedBox(width: 8.0),
         Wrap(
           children: [
-            Text('Clasificación: ', style: titleStyle,),
+            const Text('Clasificación: ', style: titleStyle,),
             classificationIcon( product["classification"] ),
           ],
         ),
-        SizedBox(width: 8.0),
+        const SizedBox(width: 8.0),
         Wrap(
           children: [
-            Text('Stock: ', style: titleStyle,),
+            const Text('Stock: ', style: titleStyle,),
             Text('${product["totalQuantity"]}'),
           ],
         ),
@@ -95,7 +93,7 @@ class ProductCard extends StatelessWidget {
     int b = ram.nextInt(130); b += 125;
     int g = ram.nextInt(130); g += 125;
     int r = ram.nextInt(130); r += 125;
-    return CircleAvatar( child: Text(product["name"][0].toString().toUpperCase()), backgroundColor: Color.fromARGB(b, g, r, 255), );
+    return CircleAvatar( backgroundColor: Color.fromARGB(b, g, r, 255), child: Text(product["name"][0].toString().toUpperCase()), );
   }
 
 
@@ -119,7 +117,7 @@ class ProductCard extends StatelessWidget {
         key: cardA,
         baseColor: const Color.fromARGB(31, 180, 180, 180),
         leading: previewImage(),
-        title: Text( product["name"], style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+        title: Text( product["name"], style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
         subtitle: previewInfo(),
         children: <Widget>[
           const Divider(
@@ -136,10 +134,10 @@ class ProductCard extends StatelessWidget {
           //     child: ProductDetails( products: product["details"],),
           //   ),
           // ),
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.spaceAround,
-            buttonHeight: 52.0,
-            buttonMinWidth: 90.0,
+            // buttonHeight: 52.0,
+            // buttonMinWidth: 90.0,
             children: <Widget>[
               TextButton(
                 style: flatButtonStyle,
@@ -150,10 +148,10 @@ class ProductCard extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Icon(Icons.edit_outlined, color: editColor),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.symmetric(vertical: 2.0),
                     ),
-                    Text('Editar',),
+                    const Text('Editar',),
                   ],
                 ),
               ),
@@ -168,7 +166,7 @@ class ProductCard extends StatelessWidget {
 
 class BtnDelete extends StatelessWidget{
 
-  BtnDelete( String this.id, { super.key });
+  const BtnDelete( this.id, { super.key });
 
   final String id;
 
@@ -181,7 +179,7 @@ class BtnDelete extends StatelessWidget{
       bottomMessage(context, "Producto eliminado");
       Navigator.pop(context);
       Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductList()));
     }
 
     final ButtonStyle flatButtonStyle = TextButton.styleFrom(

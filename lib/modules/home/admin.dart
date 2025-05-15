@@ -1,5 +1,4 @@
 import 'package:box_nova/main.dart';
-import 'package:box_nova/modules/general/map_user.dart';
 import 'package:box_nova/modules/product/product_list.dart';
 import 'package:box_nova/modules/user/user_list.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +9,15 @@ class Admin extends StatelessWidget {
   final Color accentColor = Colors.deepPurpleAccent;
   final double buttonWidth = 280.0;
 
+  const Admin({super.key});
+
   void _exit(BuildContext context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: "Inicio")),
+      MaterialPageRoute(builder: (context) => const MyHomePage(title: "Inicio")),
     );
   }
 
@@ -25,7 +26,7 @@ class Admin extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Panel de administración',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -35,7 +36,7 @@ class Admin extends StatelessWidget {
         elevation: 4
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -48,10 +49,10 @@ class Admin extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.purple.withOpacity(0.2),
+                      // color: Colors.purple.withOpacity(0.2),
                       blurRadius: 12,
                       spreadRadius: 4,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     )
                   ],
                 ),
@@ -63,7 +64,7 @@ class Admin extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Botón de usuarios con icono
               SizedBox(
@@ -72,11 +73,11 @@ class Admin extends StatelessWidget {
                   context: context,
                   icon: Icons.people_alt,
                   text: 'Listado de usuarios',
-                  destination: UserBody(),
+                  destination: const UserBody(),
                 ),
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Botón de productos con icono
               SizedBox(
@@ -85,19 +86,19 @@ class Admin extends StatelessWidget {
                   context: context,
                   icon: Icons.inventory_2,
                   text: 'Listado de productos',
-                  destination: ProductList(),
+                  destination: const ProductList(),
                 ),
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Botón de cerrar sesión
               SizedBox(
                 width: buttonWidth,
                 child: ElevatedButton.icon(
                   onPressed: () => _exit(context),
-                  icon: Icon(Icons.logout, color: Colors.white),
-                  label: Text(
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
                     "Cerrar sesión",
                     style: TextStyle(
                       fontSize: 16,
@@ -106,7 +107,7 @@ class Admin extends StatelessWidget {
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[400],
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -114,11 +115,11 @@ class Admin extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               // Créditos
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(10),
@@ -158,7 +159,7 @@ class Admin extends StatelessWidget {
       icon: Icon(icon, size: 24, color: Colors.white),
       label: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
           color: Colors.white,
@@ -166,12 +167,12 @@ class Admin extends StatelessWidget {
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 3,
-        shadowColor: Colors.purple.withOpacity(0.3),
+        // shadowColor: Colors.purple.withOpacity(0.3),
       ),
     );
   }

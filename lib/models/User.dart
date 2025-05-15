@@ -50,11 +50,11 @@ class UserModel {
     return DateFormat('dd/MM/yyyy').format(date);
   }
 
-  static Future<UsersType> getUsers( ) async {
+  static Future<UsersType> getUsers([int page = 1, int limit = 10]) async {
     var token = await Access.getToken();
 
     String info = dotenv.get('API_URL', fallback: '');
-    var url = Uri.parse( info + "auth/user?limit=20");
+    var url = Uri.parse('${info}auth/user?page=$page&limit=$limit');
     var response = await http.get(url,
       headers: {
         'authorization': token
@@ -76,7 +76,7 @@ class UserModel {
     var token = await Access.getToken();
 
     String info = dotenv.get('API_URL', fallback: '');
-    var url = Uri.parse( info + "auth/user/search");
+    var url = Uri.parse( "${info}auth/user/search");
     var response = await http.post(url,
       headers: {
         'authorization': token
@@ -98,6 +98,29 @@ class UserModel {
     }
   }
 
+  static Future< dynamic > quantityUsers() async{
+    var token = await Access.getToken();
+
+    String info = dotenv.get('API_URL', fallback: '');
+    var url = Uri.parse( "${info}auth/user/quantity");
+    var response = await http.get(url,
+        headers: {
+          'authorization': token
+        }
+    );
+
+
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      return jsonResponse['quantity'];
+      // return UserModel.fromJson(jsonResponse);
+    } else {
+      print('Error getting users: ${response.statusCode}');
+      return 40;
+    }
+  }
+
   static Future<bool> createUser( user ) async{
     var token = await Access.getToken();
 
@@ -111,8 +134,11 @@ class UserModel {
 
     print( response.body );
 
-    if (response.statusCode == 200)  return true;
-    else return false;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   static Future<bool> updateUser( id, user ) async{
@@ -126,7 +152,7 @@ class UserModel {
     // print( user );
 
     String info = dotenv.get('API_URL', fallback: '');
-    var url = Uri.parse( info + "auth/user");
+    var url = Uri.parse( "${info}auth/user");
     var response = await http.put(url,
       headers: {
         'Content-Type': 'application/json',
@@ -137,8 +163,11 @@ class UserModel {
 
     // print( response.body );
 
-    if( response.statusCode == 200 ) return true;
-    else return false;
+    if( response.statusCode == 200 ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   static Future<bool> deleteUser( id ) async {

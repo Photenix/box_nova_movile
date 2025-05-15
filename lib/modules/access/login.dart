@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:box_nova/models/Access.dart';
-import 'package:box_nova/modules/general/common_message.dart';
 import 'package:box_nova/modules/home/admin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -16,14 +15,14 @@ class Login extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login', textAlign: TextAlign.justify),
+        title: const Text('Login', textAlign: TextAlign.justify),
       ),
       body:
       SingleChildScrollView(
       child:
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Center(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: const Center(
             // heightFactor: 3,
             widthFactor: 1,
             child: LoginForm()
@@ -49,7 +48,7 @@ class _LoginFormState extends State<LoginForm>{
 
   bool _isLoading = false;
 
-  String? _msgInvalidPassword = null;
+  String? _msgInvalidPassword;
 
   String? _validMessage ( value ){
     return (value == null || value.isEmpty) ?"Ingrese el campo en su totalidad" :null;
@@ -63,7 +62,7 @@ class _LoginFormState extends State<LoginForm>{
 
     try {
       String info = dotenv.get('API_URL', fallback: '');
-      var url = Uri.parse( info + "login" );
+      var url = Uri.parse( "${info}login" );
       var response = await http.post(url,
         body: {
           "email": email,
@@ -107,19 +106,19 @@ class _LoginFormState extends State<LoginForm>{
             width: 350.0,
             child: Image.asset('assets/images/Logo.jpeg'),
           ),
-          SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           TextFormField(
             textAlign: TextAlign.center,
             validator: _validMessage,
             onSaved: ( value ){ _email = value; },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Correo',
             ),
             onTapOutside: (event) => {
               print(event)
             },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             obscureText: true,
             textAlign: TextAlign.center,
@@ -130,9 +129,9 @@ class _LoginFormState extends State<LoginForm>{
               errorText: _msgInvalidPassword
             ),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           _isLoading 
-          ? CircularProgressIndicator()
+          ? const CircularProgressIndicator()
           : ElevatedButton(
             onPressed: () {
               if( _formKey.currentState!.validate() ){
@@ -143,7 +142,7 @@ class _LoginFormState extends State<LoginForm>{
                 .then( ( val ){
                   if( val ?? false ){
                     //Iniciar sesión y redireccionar
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Admin()) );
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Admin()) );
                   }else {
                     setState(() {
                       _msgInvalidPassword = "La contraseña es invalida";
@@ -155,17 +154,17 @@ class _LoginFormState extends State<LoginForm>{
                 });
               }
             },
-            child: Text("Ingresar"),
+            child: const Text("Ingresar"),
           ),
-          SizedBox(height: 12,),
+          const SizedBox(height: 12,),
           _isLoading
           ? ElevatedButton(
             onPressed: () {
               setState(() { _isLoading = false; });
             },
-            child: Text("Cancelar"),
+            child: const Text("Cancelar"),
           )
-          : SizedBox(),
+          : const SizedBox(),
         ],
       )
     );

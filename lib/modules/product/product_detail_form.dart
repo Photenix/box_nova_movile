@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DetailGeneral extends StatefulWidget{
-  DetailGeneral({ super.key, required Function this.sentDetails, required this.listDetails, 
+  const DetailGeneral({ super.key, required this.sentDetails, required this.listDetails, 
     required this.id });
 
   final Function sentDetails;
@@ -105,7 +105,7 @@ class _DetailGeneralState extends State<DetailGeneral>{
 
   @override
   void initState(){
-    if( widget.listDetails.length > 0 ){
+    if( widget.listDetails.isNotEmpty ){
       changesProduct();
     }
 
@@ -119,7 +119,7 @@ class _DetailGeneralState extends State<DetailGeneral>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Detalles generales"),
+        title: const Text("Detalles generales"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -127,9 +127,9 @@ class _DetailGeneralState extends State<DetailGeneral>{
           children: [
             //Se encarga de guarda los detalles que se hallan hecho
             TextButton(
-              onPressed: saveDetails, child: Text("Guardar cambios")),
-            Divider(height: 10,),
-            ..._detail.whereType<Widget>().toList()
+              onPressed: saveDetails, child: const Text("Guardar cambios")),
+            const Divider(height: 10,),
+            ..._detail.whereType<Widget>()
           ],
         ),
       ),
@@ -137,12 +137,12 @@ class _DetailGeneralState extends State<DetailGeneral>{
         tooltip: "Agregar detalle",
         onPressed: (){
           //create a new key instance
-          GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+          GlobalKey<FormState> formKey = GlobalKey<FormState>();
           
-          if (_indexCountSend == 0 || _detail.where((x) => x != null).length == 0) {
+          if (_indexCountSend == 0 || _detail.where((x) => x != null).isEmpty) {
             setState(() {
-              _formKeys.add(_formKey);
-              _detail.add(ProductCardDetail( _formKey, _indexCountSend, deleteCard, getInfoCard ));
+              _formKeys.add(formKey);
+              _detail.add(ProductCardDetail( formKey, _indexCountSend, deleteCard, getInfoCard ));
               _indexCountSend++;
             });
           }
@@ -150,8 +150,8 @@ class _DetailGeneralState extends State<DetailGeneral>{
             _formKeys[_indexCountSend-1].currentState!.save();
 
             setState(() {
-              _formKeys.add(_formKey);
-              _detail.add(ProductCardDetail( _formKey, _indexCountSend, deleteCard, getInfoCard ));
+              _formKeys.add(formKey);
+              _detail.add(ProductCardDetail( formKey, _indexCountSend, deleteCard, getInfoCard ));
               _indexCountSend++;
             });
           }
@@ -165,7 +165,7 @@ class _DetailGeneralState extends State<DetailGeneral>{
 
 
 class ProductCardDetail extends StatefulWidget{
-  ProductCardDetail(
+  const ProductCardDetail(
     this.newKey, this.index, this.deleteMe, this.sendInfo,
     {
       super.key,
@@ -197,7 +197,7 @@ class _ProductCardDetailState extends State<ProductCardDetail> {
 
   // _detailSend[index] = {};
 
-  Map _detail = {
+  final Map _detail = {
     "image": null,
     "color": null,
     "size": null,
@@ -355,7 +355,7 @@ class _ProductCardDetailState extends State<ProductCardDetail> {
                   
                 ],
               ),
-              Divider(height: 10,),
+              const Divider(height: 10,),
               Wrap(
                 alignment: WrapAlignment.center,
                 children: [
@@ -363,7 +363,7 @@ class _ProductCardDetailState extends State<ProductCardDetail> {
                     onPressed: handleImage,
                     child: const Icon(Icons.camera_alt_outlined, color: Colors.grey,),
                   ),
-                  SizedBox(width: 20,),
+                  const SizedBox(width: 20,),
                   ElevatedButton(
                     onPressed: () async {
                       if( widget.detailId != null ){

@@ -10,29 +10,29 @@ class PaginationControls extends StatelessWidget {
   final Function(int) onChangeLimit;
 
   const PaginationControls({
-    Key? key,
+    super.key,
     required this.currentPage,
     required this.hasMore,
     required this.limit,
     required this.onPrevious,
     required this.onNext,
     required this.onChangeLimit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: currentPage > 1 ? onPrevious : null,
           ),
           Text('Página $currentPage'),
           IconButton(
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
             onPressed: hasMore ? onNext : null,
           ),
           DropdownButton<int>(

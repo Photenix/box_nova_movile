@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationPage extends StatefulWidget{
+  const LocationPage({super.key});
+
   @override
   _LocationPageState createState() => _LocationPageState();
 }

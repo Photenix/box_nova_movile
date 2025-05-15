@@ -21,8 +21,11 @@ class ProductModel {
       }
     );
     var data = json.decode(response.body);
-    if (response.statusCode == 200) return ProductType.from(data["data"]);
-    else throw Exception('Failed to load products');
+    if (response.statusCode == 200) {
+      return ProductType.from(data["data"]);
+    } else {
+      throw Exception('Failed to load products');
+    }
   }
 
   static Future createProduct ( Map info ) async {
@@ -49,7 +52,7 @@ class ProductModel {
 
   static Future<ProductType> searchProducts( value ) async {
     var token = await Access.getToken();
-    var url = Uri.parse(basicUrl+"/search");
+    var url = Uri.parse("$basicUrl/search");
     var response = await http.post(url,
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +67,9 @@ class ProductModel {
       var data = json.decode(response.body);
       return ProductType.from(data["data"]);
     }
-    else throw Exception('Failed to load products');
+    else {
+      throw Exception('Failed to load products');
+    }
   }
 
   static Future updateProduct ( Map info, id ) async {
@@ -89,7 +94,7 @@ class ProductModel {
 
   static Future<bool> deleteProduct (String id) async{
     var token = await Access.getToken();
-    var url = Uri.parse(basicUrl+"/"+id);
+    var url = Uri.parse("$basicUrl/$id");
     var response = await http.delete(url, 
       headers: {
         'authorization': token
@@ -101,7 +106,7 @@ class ProductModel {
 
   static Future deleteProductDetail (String id, String detailId) async{
     var token = await Access.getToken();
-    var url = Uri.parse(basicUrl+"/detail");
+    var url = Uri.parse("$basicUrl/detail");
     var response = await http.delete(url, 
       headers: {
         'authorization': token,
@@ -132,7 +137,7 @@ class ProductModel {
       }
     );
 
-    var url = Uri.parse(basicUrl+"/img");
+    var url = Uri.parse("$basicUrl/img");
 
     // Hacer la solicitud POST
     final response = await http.post(

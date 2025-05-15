@@ -7,7 +7,7 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 
 
 class ProductForm extends StatefulWidget {
-  ProductForm({ super.key, this.productInfo, this.id });
+  const ProductForm({ super.key, this.productInfo, this.id });
 
   final productInfo;
   final String? id;
@@ -34,10 +34,10 @@ class _ProductFormState extends State<ProductForm> {
     int seeNumber = 0;
     setState(() {
       _details = newDetail;
-      _details.forEach((e){
+      for (var e in _details) {
         int x = int.tryParse(e["quantity"]) ?? 0;
         seeNumber += x;
-      });
+      }
       totalProduct = seeNumber;
       _controller.text = totalProduct.toString();
       _product["totalQuantity"] = totalProduct;
@@ -107,7 +107,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       body:
       SingleChildScrollView(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Center(  
         child: Form(
           key: _formKey,
@@ -118,7 +118,7 @@ class _ProductFormState extends State<ProductForm> {
               const SizedBox(height: 18,),
               _input("Precio", "price", 
                 keyType: TextInputType.number, 
-                initVal: _product["price"] == null ?null :_product["price"].toString()
+                initVal: _product["price"]?.toString()
               ),
               const SizedBox(height: 18,),
               TextFormField(
@@ -130,7 +130,7 @@ class _ProductFormState extends State<ProductForm> {
                 },
                 validator: isValid,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Cantidad",
                 ),
                 readOnly: true,
@@ -225,7 +225,7 @@ class _ProductFormState extends State<ProductForm> {
                       await ProductModel.createProduct( _product );
                       Navigator.pop(context);
                       Navigator.pop(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductList()));
                     }
                     else{
                       setState(() {
@@ -235,7 +235,7 @@ class _ProductFormState extends State<ProductForm> {
                       if( status ){
                         Navigator.pop(context);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductList()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductList()));
                       }
                       else {
                         bottomMessage(context, "No se ha podido actualizar");

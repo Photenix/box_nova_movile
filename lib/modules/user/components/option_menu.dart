@@ -25,7 +25,7 @@ class _OptionMenuState extends State<OptionMenu> {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar( content: Text(message,
         textAlign: TextAlign.center),
-        duration: Duration(seconds: 2) )
+        duration: const Duration(seconds: 2) )
     );
   }
 
@@ -47,7 +47,7 @@ class _OptionMenuState extends State<OptionMenu> {
       bool isDeleted = await UserModel.deleteUser( widget.user["_id"] );
       if( isDeleted ){
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const UserList()));
         _messageState(context, "Usuario eliminado");
       }
       else{
@@ -61,7 +61,7 @@ class _OptionMenuState extends State<OptionMenu> {
           _state =!_state;
         });
         String strAdvice = _state ?"activo" :"inactivo";
-        _messageState(context, "Se ha cambiado el estado al usuario a " + strAdvice);
+        _messageState(context, "Se ha cambiado el estado al usuario a $strAdvice");
       }
       else{
         // TODO : hacer que sea posible aplicar cambios de estado en el lado del backend
@@ -77,9 +77,9 @@ class _OptionMenuState extends State<OptionMenu> {
       return Wrap(
         alignment: WrapAlignment.center,
         children: <Widget>[
-          Text(title, style: TextStyle(fontSize: 17, color: Colors.blueAccent )),
-          SizedBox(width: 4),
-          Text(text, style: TextStyle(fontSize: 15)),
+          Text(title, style: const TextStyle(fontSize: 17, color: Colors.blueAccent )),
+          const SizedBox(width: 4),
+          Text(text, style: const TextStyle(fontSize: 15)),
         ],
       );
     }
@@ -88,14 +88,14 @@ class _OptionMenuState extends State<OptionMenu> {
       child:
       SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             'Información de el usuario ${user['username']}', 
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
@@ -118,7 +118,7 @@ class _OptionMenuState extends State<OptionMenu> {
               const SizedBox(height: 8,),
             ],
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           ElevatedButton(
             child: const Text('Cerrar'),
             onPressed: () => Navigator.pop(context),
@@ -142,7 +142,7 @@ class _OptionMenuState extends State<OptionMenu> {
   Widget build(BuildContext context) {
 
     Color iconColor = _state ?Colors.green :Colors.red;
-    Icon iconType = _state ?Icon(Icons.check_circle_outline) :Icon(Icons.radio_button_unchecked_outlined);
+    Icon iconType = _state ?const Icon(Icons.check_circle_outline) :const Icon(Icons.radio_button_unchecked_outlined);
 
     return Center(
       child: PopupMenuButton<ActionItem>(
@@ -156,7 +156,7 @@ class _OptionMenuState extends State<OptionMenu> {
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ActionItem>>[
         const PopupMenuItem(
           value: ActionItem.view,
-          child: const ListTile(
+          child: ListTile(
             leading: Icon(Icons.visibility_outlined),
             title: Text('Detalle'),
           ),
@@ -180,7 +180,7 @@ class _OptionMenuState extends State<OptionMenu> {
           child: ListTile(
             leading: iconType,
             iconColor: iconColor,
-            title: Text('Estado'),
+            title: const Text('Estado'),
           ),
         ),
       ],
@@ -190,6 +190,8 @@ class _OptionMenuState extends State<OptionMenu> {
 
 
 class ModalDetail extends StatelessWidget {
+  const ModalDetail({super.key});
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuItem(

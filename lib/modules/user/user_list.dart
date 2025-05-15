@@ -1,8 +1,6 @@
 import 'package:box_nova/models/User.dart';
-import 'package:box_nova/modules/general/CommonSearch.dart';
 import 'package:box_nova/modules/general/pagination_controls.dart';
 import 'package:box_nova/modules/user/components/option_menu.dart';
-import 'package:box_nova/modules/user/user_form.dart';
 import 'package:flutter/material.dart';
 
 class UserList extends StatelessWidget {
@@ -23,9 +21,9 @@ class UserList extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Usuarios'),
+        title: const Text('Usuarios'),
       ),
-      body: UserBody()
+      body: const UserBody()
     );
   }
 
@@ -46,36 +44,48 @@ class _UserBodyState extends State<UserBody> {
   int _limit = 10;
   bool _hasMore = true;
 
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  bool _isLoading = true;
+  int _quantity = 20;
 
   void _findUser(  ) async {
     final query = _searchController.text.toLowerCase();
     if( query.length > 3 ){
+      setState(() {
+        _isLoading = true; // Activar el estado de carga
+      });
       UserType user = await UserModel.findUsers( query );
-      if( user.length > 0 ){
-        setState(() {
-          _userData = user;
-        });
-      }
+      setState(() {
+        _userData = user;
+        _isLoading = false;
+      });
     }
-    if( query.length == 0 ){
+    if( query.isEmpty ){
       _getAllUsers();
     }
   }
 
   void _getAllUsers() async {
-    UserType user = await UserModel.getUsers();
-    if( user.length > 0 ){
+    setState(() {
+      _isLoading = true; // Activar el estado de carga
+    });
+    UserType user = await UserModel.getUsers(_currentPage, _limit);
+    if( user.isNotEmpty ){
       setState(() {
         _userData = user;
+        _isLoading = false;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _refreshUsers() async {
     setState(() {
-      // _currentPage = 1;
-      // _productList.clear();
+      _currentPage = 1;
+      _userData.clear();
+      _searchController.clear();
     });
     _getAllUsers();
   }
@@ -90,12 +100,27 @@ class _UserBodyState extends State<UserBody> {
     _getAllUsers();
   }
 
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+    });
+    _getAllUsers();
+  }
+
+  void _getQuantityUsers() async {
+    int quantity = await UserModel.quantityUsers();
+    setState(() {
+      _quantity = quantity;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _getAllUsers();
     setState(() {});
     _searchController.addListener(_findUser);
+    _getQuantityUsers();
   }
 
   @override
@@ -104,29 +129,79 @@ class _UserBodyState extends State<UserBody> {
       Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Usuarios'),
+          title: const Text('Usuarios'),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(60),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Buscar usuarios...',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 ),
               ),
             ),
           ),
         ),
-      body: Center(
+      body:
+      _isLoading
+      ? const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(), // Indicador de carga circular
+            SizedBox(height: 16),
+            Text('Cargando usuarios...'),
+          ],
+        ),
+      )
+      :
+      _userData.isEmpty
+      ?Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.search_off, size: 50, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text(
+              _searchController.text.isEmpty
+                  ? 'No hay productos disponibles'
+                  : 'No se encontraron resultados',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              child: ElevatedButton.icon(
+                onPressed: _clearSearch,
+                label: const Text(
+                  "Limpiar busqueda",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple[500],
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 3,
+                ),
+              ),
+            )
+          ],
+        ),
+      )
+      :Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -134,7 +209,7 @@ class _UserBodyState extends State<UserBody> {
               child: RefreshIndicator(
                 onRefresh: _refreshUsers,
                 child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   child: UserTable(usersList: _userData),
                 ),
               )
@@ -169,14 +244,14 @@ class UserTable extends StatelessWidget {
   final UserType usersList;
 
   String shortString ( String text, {int end = 5 } ){
-    if( end > text.length ) return '${text.substring(0, text.length)}';
+    if( end > text.length ) return text.substring(0, text.length);
     return '${text.substring(0, end)}...';
   }
   
   @override
   Widget build(BuildContext context) {
     return DataTable(
-      columns: [
+      columns: const [
         DataColumn(label: Text('Documento')),
         DataColumn(label: Text('Nombre', textAlign: TextAlign.center,)),
         DataColumn(label: Text('Opciones')),
@@ -197,7 +272,7 @@ class UserTable extends StatelessWidget {
           ),
           DataCell( OptionMenu( user: user ) ),
           ],
-          color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
             return user['state']? Colors.transparent : const Color.fromARGB(54, 85, 85, 85);
           }),
         );

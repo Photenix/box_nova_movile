@@ -5,14 +5,22 @@ import 'package:intl/intl.dart';
 class ProductDetails extends StatelessWidget {
   final Map<String, dynamic> product;
 
-  ProductDetails({required this.product});
+  const ProductDetails({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     final hasImages = product['images'] != null && product['images'].isNotEmpty;
-    final defaultImage = 'https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png';
+    const defaultImage = 'https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png';
 
     String descriptionProduct = product['description'] == '' ?'Sin descripción' :product['description'];
+
+    final traslater = {
+      'Unisex': 'Unisex',
+      'Male': 'Hombre',
+      'Female': 'Mujer',
+      'Girl': 'Niña',
+      'Boy': 'Niño'
+    };
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +40,7 @@ class ProductDetails extends StatelessWidget {
         // ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,7 +51,7 @@ class ProductDetails extends StatelessWidget {
                 itemCount: hasImages ? product['images'].length : 1,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: CachedNetworkImage(
@@ -52,7 +60,7 @@ class ProductDetails extends StatelessWidget {
                             : defaultImage,
                         fit: BoxFit.contain,
                         placeholder: (context, url) =>
-                            Center(child: CircularProgressIndicator()),
+                            const Center(child: CircularProgressIndicator()),
                         errorWidget: (context, url, error) =>
                             Image.network(defaultImage),
                       ),
@@ -61,41 +69,41 @@ class ProductDetails extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Información básica
             Text(
               product['name'],
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Chip(
-                  label: Text(product['classification']),
+                  label: Text(traslater[ product['classification'] ] ??  product['classification'] ),
                   backgroundColor: Colors.purple[50],
                   labelStyle: TextStyle(color: Colors.purple[800]),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               descriptionProduct ?? 'Sin descripción',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 24),
-            Divider(),
+            const SizedBox(height: 24),
+            const Divider(),
             // Variantes del producto
-            Text(
+            const Text(
               'Variantes disponibles',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             ...product['details'].map<Widget>((detail) =>
                 _buildVariantCard(detail)).toList(),
           ],
@@ -108,11 +116,15 @@ class ProductDetails extends StatelessWidget {
     final hasPurchasePrice = detail['purchasePrice'] != null &&
         detail['purchasePrice'] > 0;
 
+    final discountPrice = detail['price'] - ((detail['price'] * detail['discount'])/100);
+
+    final pricePurchase = detail['purchasePrice'] == 0 ?detail['price'] :detail['purchasePrice'];
+
     return Card(
-      margin: EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             // Tamaño
@@ -134,7 +146,7 @@ class ProductDetails extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             // Información de precios
             Expanded(
               child: Column(
@@ -144,7 +156,7 @@ class ProductDetails extends StatelessWidget {
                   'Código: ${detail['barcode']}',
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 // PRECIO DE COMPRA (si existe)
                 // if (hasPurchasePrice)
                   Column(
@@ -162,14 +174,15 @@ class ProductDetails extends StatelessWidget {
                         decimalDigits: 2,
                         symbol: '\$',
                         locale: 'es',
-                      ).format(detail['purchasePrice'] ?? detail['price']),
+                      ).format(pricePurchase ?? detail['purchasePrice']),
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[800],
-                        decoration: TextDecoration.lineThrough,
+                        color: Colors.purple[800],
+                        // color: Colors.grey[800],
+                        // decoration: TextDecoration.lineThrough,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                   ],
                 ),
                 // PRECIO DE VENTA
@@ -180,18 +193,35 @@ class ProductDetails extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                 ),
-                Text(
-                  NumberFormat.currency(
-                    decimalDigits: 2,
-                    symbol: '\$',
-                    locale: 'es',
-                  ).format(detail['price']),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple[800],
-                  ),
-                ),
+                Row(
+                  children:[
+                    Text(
+                      NumberFormat.currency(
+                        decimalDigits: 2,
+                        symbol: '\$',
+                        locale: 'es',
+                      ).format(discountPrice),
+                      // ).format(detail['price']),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple[800],
+                      ),
+                    ),
+
+                    SizedBox(width: 8),
+                    if (detail['discount'] > 0)
+                      Text(
+                        '${detail['discount']}% OFF',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ]
+                )
+
                 ],
               ),
             ),

@@ -1,11 +1,12 @@
 import 'package:box_nova/models/ProductModel.dart';
 import 'package:box_nova/modules/general/CommonSearch.dart';
 import 'package:box_nova/modules/product/product_card.dart';
-import 'package:box_nova/modules/product/product_form.dart';
 import 'package:flutter/material.dart';
 
 
 class ProductList extends StatefulWidget{
+  const ProductList({super.key});
+
   @override
   _ProductListState createState() => _ProductListState();
 }
@@ -49,7 +50,7 @@ class _ProductListState extends State<ProductList> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Vista de productos'),
+        title: const Text('Vista de productos'),
       ),
       body: Column(
         children: <Widget>[

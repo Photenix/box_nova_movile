@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class ProductDetails extends StatelessWidget{
-  ProductDetails({Key? key, required this.products});
+  const ProductDetails({super.key, required this.products});
   final List products;
 
   Widget cardDetail( context, { src, details }){
@@ -63,28 +63,28 @@ class ProductDetails extends StatelessWidget{
       //     color: Colors.white,
       //   )
       // ),
-      child: Icon(Icons.visibility_outlined),
+      child: const Icon(Icons.visibility_outlined),
     );
   }
 
   Widget getInfo( context, detail ){
-    TextStyle? _style = TextStyle(fontWeight: FontWeight.bold);
+    TextStyle? style = const TextStyle(fontWeight: FontWeight.bold);
 
     return
     Padding(
-    padding: EdgeInsets.symmetric(vertical: 14),
+    padding: const EdgeInsets.symmetric(vertical: 14),
     child:
     Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Color', style: _style ),
+        Text('Color', style: style ),
         Text('${detail["color"]}'),
         const SizedBox(height: 15),
-        Text('Tamaño', style: _style ),
+        Text('Tamaño', style: style ),
         Text('${detail["size"]}'),
         const SizedBox(height: 15),
-        Text('Cantidad', style: _style ),
+        Text('Cantidad', style: style ),
         Text('${detail["quantity"]}'),
         const SizedBox(height: 15),
         TextButton(
