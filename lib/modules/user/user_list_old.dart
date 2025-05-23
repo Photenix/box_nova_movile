@@ -1,7 +1,6 @@
 import 'package:box_nova/models/User.dart';
 import 'package:box_nova/modules/general/pagination_controls.dart';
 import 'package:box_nova/modules/user/components/option_menu.dart';
-import 'package:box_nova/modules/user/user_card.dart';
 import 'package:flutter/material.dart';
 
 class UserList extends StatelessWidget {
@@ -202,40 +201,82 @@ class _UserBodyState extends State<UserBody> {
           ],
         ),
       )
-      :Column(
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _refreshUsers,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 16), // Espacio para la paginación
-                  child: UserCardGrid(initialUsers: _userData),
+      :Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshUsers,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: UserTable(usersList: _userData),
                 ),
-              ),
+              )
             ),
-          ),
-
-          PaginationControls(
-            currentPage: _currentPage,
-            hasMore: _hasMore,
-            limit: _limit,
-            onPrevious: () {
-              setState(() => _currentPage--);
-              _getAllUsers();
-            },
-            onNext: () {
-              setState(() => _currentPage++);
-              _getAllUsers();
-            },
-            onChangeLimit: (newLimit) {
-              _changeLimit(newLimit);
-            },
-          ),
-        ],
+            // Commonsearch( handleFind: _findUser, ),
+            // SizedBox( height: 8, ),
+            // SizedBox(height: 70,)
+            PaginationControls(
+              currentPage: _currentPage,
+              hasMore: _hasMore,
+              limit: _limit,
+              onPrevious: () {
+                setState(() => _currentPage--);
+                _getAllUsers();
+              },
+              onNext: () {
+                setState(() => _currentPage++);
+                _getAllUsers();
+              },
+              onChangeLimit: (newLimit) {
+                _changeLimit(newLimit);
+              },
+            )
+          ]
+        )
       )
+    );
+  }
+}
+class UserTable extends StatelessWidget {
+  const UserTable({ super.key, required this.usersList });
+  final UserType usersList;
 
-      );
+  String shortString ( String text, {int end = 5 } ){
+    if( end > text.length ) return text.substring(0, text.length);
+    return '${text.substring(0, end)}...';
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return DataTable(
+      columns: const [
+        DataColumn(label: Text('Documento')),
+        DataColumn(label: Text('Nombre', textAlign: TextAlign.center,)),
+        DataColumn(label: Text('Opciones')),
+      ],
+      rows: usersList.map( (user){
+        return DataRow(cells: [
+          DataCell(
+            Tooltip(
+              message: user['documentNumber'],
+              child: Text(shortString(user['documentNumber'])),
+            )
+          ),
+          DataCell(
+            Tooltip(
+              message: '${user['firstName']} ${user['lastName']}',
+              child: Text(shortString('${user['firstName']} ${user['lastName']}', end: 20), textAlign: TextAlign.center,)
+            )
+          ),
+          DataCell( OptionMenu( user: user ) ),
+          ],
+          color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+            return user['state']? Colors.transparent : const Color.fromARGB(54, 85, 85, 85);
+          }),
+        );
+      }).toList()
+    );
   }
 }
